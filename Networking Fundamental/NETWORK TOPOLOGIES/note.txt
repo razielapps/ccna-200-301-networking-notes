@@ -1,0 +1,79 @@
+We have covered the types of networks. Now we dive into their architecture, their blueprint. This is the topology. The network topology defines the physical and logical arrangement of devices and the connections between them. It is the foundation that determines how data flows, how resilient the network is to failure, and how scalable it can be. For the CCNA, you need a firm grasp of both classic and modern topologies.
+
+Let's begin with the reinforcement of a critical distinction: Physical versus Logical Topology.
+
+Physical Topology: This is the tangible, visible layout. It's how the devices in the real world are placed, where cables run through the walls, what ports are being used. You can take a picture of it.
+
+Logical Topology: This refers to the invisible pathway that the data takes. It's about how the devices communicate across the physical wiring. It defines the flow of data. Two networks can have the same physical topology but a very different logical one.
+
+Think of a city's subway system.
+The physical topology is the tunnels and the tracks themselves.
+
+The logical topology consists of the various train lines running over that track. A single physical set of tracks can carry multiple logical lines, such as the Express and the Local.
+
+Now, let's proceed to explain each of the physical topologies individually.
+1. Point-to-Point Topology
+This is the most basic network configuration. A point-to-point configuration is a direct, dedicated link between two devices. No other systems can share the link.
+
+Example of Point-to-Point Topology: The connection of your computer with a dedicated printer using a USB cable is a point-to-point network. In wide area networking, a leased line between a company's two offices is a point-to-point connection.
+Point-to-Point Topology: It is simple, secure, and uses the full capacity of the link for just two devices. However, it does not scale. To connect many devices, you would need a separate point-to-point link for every single pair, and such a solution is unmanageable.
+2. Bus Topology
+As explained, this consists of one central cable, the backbone or segment, to which all devices of the network are connected. The devices tap into the cable through connectors.
+
+How it works: Data transmitted by any device travels in both directions along the backbone. All devices see the data; however, only the intended recipient actually processes it. This is called a logical bus.
+
+The critical mechanism is CSMA/CD; since all devices share the same medium they must listen first to determine whether the bus is free (Carrier Sense) before transmitting. If two devices transmit at the same time, a collision occurs. They detect this, stop, wait for a random time and try again. This contention method slows the network down as traffic increases.
+Single Point of Failure: A break in the main cable segment brings down the entire network. Terminators at each end of the bus are necessary to absorb the signal and prevent it from bouncing back.
+3. Linear Bus Topology
+This is another type of bus topology, but it's even simpler than the standard one. The devices are connected in a line, one after the other along a single run of cable. It's a daisy-chain without any branching. A good example of a linear bus is the classic 10Base2 Ethernet using coaxial cable. The characteristics and problems are just the same as for standard bus topology.
+4. Star Topology
+
+The modern standard for wired Local Area Networks: each device has an independent cable running back to a central connecting device, which is almost always a switch.
+How it works: The central device acts like a traffic cop. It manages the connections and forwards data intelligently.
+
+Eliminating Collisions: In a star topology, if implemented correctly with a switch, collisions are nearly eliminated. The switch offers dedicated bandwidth to each port. This is in stark contrast to the bus topology. If a hub is used instead of the switch, the logical topology would actually be a bus, and collisions would still be an issue, which is why hubs are no longer used.
+Advantages: The installation and management are easy. Troubleshooting is equally easy. Each cable failure affects only one device. Adding new devices to the network is not disruptive.
+The central device is a single point of failure; if the switch fails, the entire network segment goes down. It also requires more cable than bus topology.
+5. Extended Star Topology
+
+This is called a hierarchical star topology. This is how you build larger networks. You connect several star networks by connecting their central switches together. The link between the central switches is a point-to-point link.
+
+Example: In a large office building, each floor might have its own switch to create a star for that floor. Then all these floor switches are connected to a central, more powerful switch in the server room. This is called an extended star. The whole internet is fundamentally one big, global, extended star topology.
+6. Ring Topology
+Each device is connected to two others. Collectively, they form a closed loop. Data travels in one direction around the ring, passing through each device.
+How it works: Data travels in a frame. Each device acts as a repeater, regenerating the signal and sending it to the next device. A device called a Media Access Unit (MAU) is often used to manage the ring.
+Token Passing: The most widely used access control method in a ring is token passing. In token passing, there is a special packet that circulates the ring. A device can transmit data only when it possesses the token. There are no collisions in this approach because only a single device can have the token at any time.
+
+Single Point of Failure: A break in any cable or a fault in any single device breaks the ring and thus brings the entire network to a standstill.
+7. Dual Ring Topology
+
+This is a redundancy enhancement of the ring topology. It consists of two concentric rings. Data moves in opposite directions on each ring. If one ring has a break, the network automatically "wraps" the data onto the second ring at the point of failure, creating a new, longer, but still operational, single ring. FDDI stands for Fiber Distributed Data Interface, which is a technology that uses a dual ring topology to provide high-speed backbone networks.
+8. Mesh Topology
+This is the ultimate in redundancy. Within a full mesh topology, each and every device directly connects point-to-point to each and every other device within the network.
+Formula: The number of links needed for a full mesh is n(n-1)/2, where n = the number of devices. For 4 devices, that is 6 links. For 10 devices, this is 45 links. This becomes very expensive and complex to manage.
+
+Advantage: Extremely fault-tolerant. If one link fails, data can be rerouted over any of the other links.
+Disadvantages: Cost and complexity. It is not practical for a large network.
+Partial Mesh Topology: A more pragmatic compromise. The critical devices are interconnected in a full mesh, while less-than-critical devices may have only a few connections. This is very common in WAN designs, where regional offices may have multiple connections for redundancy, but smaller branch offices might have only one or two.
+
+9. Hybrid Topology
+
+Most real-world enterprise networks are hybrids. They combine two or more different topologies to meet specific needs.
+Common Example: A star-ring hybrid. Physically, the network is wired in a star, with devices attached to a central MAU. But logically, the MAU creates an internal ring. Another common hybrid is a star-bus, where multiple star networks are connected via a bus backbone.
+Logical Topologies Revisited
+This is an important CCNA-related concept. The physical wiring does not dictate the logical data path.
+Ethernet with a Switch: Physically it's a star. Logically it's a point-to-point topology. The switch creates a temporary, dedicated path between the two sending and receiving devices for the time period of their frame exchange. No other devices see the traffic.
+Ethernet with a Hub: Physically, it's a star. Logically, it is a bus. The hub repeats the electrical signal to every port so that every device sees every frame, leading to collisions and CSMA/CD.
+Wireless LAN (Wi-Fi): Devices are physically scattered. Logically, it is a bus. The radio frequency is a shared medium, so all devices have to take turns to transmit, which uses CSMA/CA (Collision Avoidance) instead of CD.
+Why Topology is Important for the CCNA
+Design: You will select topologies, considering cost, scalability, and fault tolerance. A mesh for a critical data center core, an extended star for a campus network.
+Troubleshooting: You can only predict the path that data will take by understanding the logical topology. When you have slow performance in a star topology, you know to look at the performance of the central switch and the uplink ports, not the individual cables unless it is a single user issue.
+Protocol Understanding: Technologies like Spanning Tree Protocol exist specifically to control logical topologies in the physical star or extended star network to avoid logical loops, which are disastrous.
+Glossary for Topic 3
+Topology: The physical or logical arrangement of a network.
+Physical Topology: The physical layout of cables and devices.
+Logical Topology: The path that data signals take through the network.
+Point-to-Point: A link between only two devices.
+Bus Topology: There is one communication line shared by all devices.
+
+Linear Bus: A bus topology in which devices are connected one after another in a straight line. CSMA/CD: Carrier Sense Multiple Access with Collision Detection. The method used by Ethernet bus networks to manage shared access. Star Topology: A topology where each device connects to a central device. Extended Star: The topology results from connecting the central devices of several stars. Ring Topology: A topology where every device is connected to two others forming a loop. Token Passing: This is an access method wherein transmission of data can be performed only when a device possesses a token. Dual Ring: A ring topology that has a second ring for redundancy. Mesh Topology: In this topology, each device is directly connected to every other device. Full mesh: A mesh wherein the connection formula n(n-1)/2 is fully implemented. Partial Mesh: A mesh in which only critical devices have multiple interconnections. Hybrid Topology: The integration of two or more different topologies. Switch: A central device in the star topology that provides dedicated bandwidth per port. Hub: A now-obsolete central device that repeats signals to all ports, making it a logical bus.

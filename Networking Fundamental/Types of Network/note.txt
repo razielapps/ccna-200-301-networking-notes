@@ -1,0 +1,63 @@
+Alright, now that we’ve got a handle on what a network actually is, let’s dive into the different shapes and sizes they come in.
+
+Topic 2: Types of Networks
+
+Think about your own life—your close friends and family, your work colleagues, and then, well, everyone else out there in the world. Networks work kind of the same way. Their main differences? Size, and who gets to use them.
+
+You’ll mainly hear about three types: LAN, WAN, and WLAN.
+
+1. LAN (Local Area Network)
+
+A LAN is basically your inner circle. It covers a small area—like your house, your office, a classroom, or maybe a whole school building.
+
+Key thing: It’s close to home. You call the shots here.
+Imagine your house. You decide who comes in, where things go, and how you talk to each other. Inside, everything’s quick and easy.
+
+What makes a LAN tick:
+- Fast speeds—think gigabit connections, no sweat.
+- Not too pricey to set up.
+- You own and manage the hardware (routers, switches, cables, all that).
+
+Example: Your home Wi-Fi. Your laptop, phone, TV, and printer all connect through your router. They share files, print documents, all within your own space—no need to send anything out to the internet.
+
+2. WLAN (Wireless Local Area Network)
+
+A WLAN is just a LAN without the wires. Same idea, same control, but now you can move around.
+
+Key thing: Wireless—no cables tying you down.
+It’s like chatting with everyone in your house, but you’re walking from the kitchen to the couch, phone in hand, and the conversation never drops.
+
+3. WAN (Wide Area Network)
+
+If your LAN is your house, then a WAN is the whole city—or even the world. WANs stretch across big distances and link up a bunch of LANs.
+
+Key thing: It’s big, and you don’t manage all of it yourself.
+Picture the road network. You don’t build or fix the highways, right? You just use them to get from your house (your LAN) to a friend’s across town (their LAN).
+
+WAN features:
+- Covers cities, countries, or even continents.
+- Usually slower than a LAN—distance and traffic slow things down, even if the backbone is fast.
+- Most companies rent connections from service providers (like AT&T or Verizon). No one’s laying their own cables under the ocean.
+
+Biggest WAN out there? The internet. It’s the mother of all networks, connecting everything, everywhere.
+
+Another example: A business with offices in New York and London. Each office has its own LAN, but they use a WAN—maybe a leased line or VPN—to link the two, making one big company network.
+
+Why This Matters for the CCNA
+
+You’ll always run into places where LANs and WANs meet. Routers, for example, exist to connect your LAN to a WAN. If you don’t get the difference, it’s tough to set up or fix networks.
+
+Glossary for Topic 2:
+
+- LAN (Local Area Network): A network for a small area—home, office. Fast and owned by you.
+  - Think: Your house and everything inside.
+- WLAN (Wireless LAN): Same as a LAN, but wireless.
+  - Think: Your house, but you’re free to move around with your phone.
+- WAN (Wide Area Network): Connects big areas and multiple LANs.
+  - Think: The highways linking cities.
+- ISP (Internet Service Provider): The company that gives you WAN access, like getting you on the internet.
+  - Think: The people who build and maintain the roads.
+- Router: The gadget that ties different networks together. It’s what lets your LAN talk to the WAN.
+  - Think: Your front door—it connects your private space to the outside world.
+
+So now, you’ve got the lay of the land—where these networks live and how big their reach is.

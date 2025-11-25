@@ -2,6 +2,8 @@ A comprehensive and beginner-friendly collection of notes, guides, and practical
 
 Struggling with the OSI model? Confused about subnetting? This repo breaks down complex topics into clear, detailed explanations with relatable analogies. It's perfect for aspiring network engineers, IT professionals, and anyone preparing for the CCNA exam who wants to truly *understand* the material, not just memorize it.
 
+You can find the video notes on my youtube channel @avtconscience
+
 **What's Inside:**
 
 *   **In-Depth Theoretical Notes:** Detailed, blog-style notes on every Network Fundamentals topic, including:

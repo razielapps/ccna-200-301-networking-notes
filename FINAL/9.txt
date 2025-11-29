@@ -1,0 +1,97 @@
+Of course. Let's proceed.
+
+Topic 9: Quality of Service (QoS)
+
+In a network, all traffic is not created equal. Some applications, like voice and video calls, are highly sensitive to delay (latency) and jitter (variation in delay). A one-second delay in an email is unnoticeable, but a one-second delay in a voice call makes conversation impossible. Other traffic, like file transfers, is not sensitive to delay but requires all the data to arrive correctly. Quality of Service (QoS) is a set of tools and techniques used to manage network traffic to provide better service to selected applications by prioritizing certain types of traffic over others.
+
+The primary goal of QoS is not to make a link faster, but to manage congestion on a link to ensure that critical applications perform well when the network is busy. It's like having a carpool lane on a highway. The lane doesn't make the road wider, but it ensures that vehicles with high priority (carpools) can move quickly even when other lanes are congested.
+
+Key QoS Concepts:
+
+1. Classification and Marking:
+   Classification is the process of identifying and categorizing traffic into different classes. This can be done based on many factors, such as:
+   - IP Address (Source/Destination)
+   - TCP/UDP Port Number (e.g., port 80 for web, 5060 for VoIP)
+   - Protocol (e.g., RTP for voice/video)
+   Marking is the process of tagging a packet or frame with a specific value so that other network devices can easily identify its priority without having to re-inspect it. The most common marking fields are:
+   - IP Precedence (3 bits) or DSCP (Differentiated Services Code Point - 6 bits) in the IP header. DSCP is the modern standard.
+   - 802.1p (Class of Service - 3 bits) inside the 802.1Q header for Ethernet frames.
+
+2. Congestion Management (Queuing):
+   When a network interface is congested, packets must be held in a queue before they can be transmitted. QoS allows you to create multiple queues and assign different priorities to them.
+   - Low-Latency Queuing (LLQ): This is the most important queuing method. It creates a strict priority queue. Traffic placed in this queue is always sent first, before any packets in other queues are serviced. This is essential for voice and video.
+
+3. Policing and Shaping:
+   Both are traffic-conditioning mechanisms that control the rate of traffic.
+   - Policing: Drops traffic that exceeds a specified rate. It is a hard limit.
+   - Shaping: Buffers traffic that exceeds a specified rate and smooths it out over time to avoid dropping packets. It is used to conform to the speed of a slower link.
+
+The QoS Model:
+The general approach to implementing QoS is:
+1. Classify traffic into different classes (e.g., Voice, Video, Critical Data, Scavenger).
+2. Mark the traffic with a DSCP value as close to the source as possible.
+3. Configure network devices to trust these markings.
+4. Use queuing mechanisms like LLQ on congested WAN links to ensure high-priority traffic is sent first.
+
+Example: Prioritizing VoIP Traffic
+VoIP phones typically mark their voice packets with a DSCP value of EF (Expedited Forwarding - decimal 46). A switch can be configured to trust this marking. Then, on a router's WAN interface, a policy can be created that places all traffic marked EF into the Low-Latency Queue, guaranteeing it minimal delay and jitter.
+
+Basic QoS Configuration (Classifying and Marking on a Router):
+This example creates a class-map to match VoIP traffic (RTP on ports 16384-32767) and a policy-map to mark it.
+```
+Router(config)# class-map VOICE
+Router(config-cmap)# match ip rtp 16384 16383
+Router(config-cmap)# exit
+Router(config)# policy-map WAN-EDGE
+Router(config-pmap)# class VOICE
+Router(config-pmap-c)# set dscp ef
+Router(config-pmap-c)# exit
+Router(config-pmap)# exit
+Router(config)# interface GigabitEthernet0/0
+Router(config-if)# service-policy input WAN-EDGE
+```
+
+Verification Commands:
+show class-map: Displays configured class maps.
+show policy-map: Displays configured policy maps.
+show policy-map interface [interface]: Shows the statistics and effectiveness of a policy applied to an interface.
+
+Assignment 9: Configuring Basic QoS for VoIP
+
+Objective: To create a simple QoS policy that prioritizes voice traffic.
+1. In Packet Tracer, create a topology with two routers connected by a serial link (set a low clock rate like 64 kbps to create congestion). Connect a VoIP phone or a PC running a softphone to each router. Alternatively, use a traffic generator to simulate voice traffic.
+2. Configure IP addresses and routing so the two phones/PCs can communicate.
+3. First, test without QoS. Generate a continuous ping (a poor man's traffic flood) from a PC on one side to a PC on the other, and simultaneously try to make a voice call between the phones. The voice call will likely be choppy or fail because the ping traffic is congesting the slow serial link.
+4. Now, configure QoS on both routers.
+   - Create a class-map to identify voice traffic. You can match the RTP port range.
+     `class-map match-any VOICE`
+     `match ip rtp 16384 16383`
+   - Create a policy-map that marks this traffic.
+     `policy-map MARK-VOICE`
+     `class VOICE`
+     `set dscp ef`
+   - Apply this policy as an INPUT policy on the LAN interface of the router (the interface where the phone is connected).
+     `interface GigabitEthernet0/0`
+     `service-policy input MARK-VOICE`
+5. Now, configure the outgoing policy on the serial interface to actually prioritize the marked traffic.
+   - Create a policy-map for the serial link.
+     `policy-map WAN-QOS`
+     `class class-default`
+     `fair-queue` (This enables Weighted Fair Queuing for other traffic)
+     `priority 64` (This creates a Low-Latency Queue and reserves 64 kbps for EF traffic)
+   - Apply this policy as an OUTPUT policy on the serial interface.
+     `interface Serial0/0/0`
+     `service-policy output WAN-QOS`
+6. Repeat steps 4 and 5 on the second router.
+7. Now, repeat the test. Start the continuous ping again and then make a voice call. The voice call should now be clear, as the EF-marked voice packets are being placed in the priority queue and sent ahead of the ping packets.
+
+Glossary for Topic 9:
+QoS: A set of techniques to manage network traffic and provide better performance for specific applications.
+Classification: Identifying and categorizing traffic.
+Marking: Tagging a packet with a priority value (e.g., DSCP).
+DSCP: The field in the IP header used for marking packet priority.
+LLQ: A queuing method that provides a strict-priority queue for delay-sensitive traffic.
+Latency: The delay a packet experiences from source to destination.
+Jitter: The variation in latency between packets.
+
+Are you ready to proceed to the next topic?

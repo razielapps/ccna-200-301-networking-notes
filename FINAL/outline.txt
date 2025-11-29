@@ -1,0 +1,39 @@
+Here is the numbered list of all uncovered and partially covered topics from your outline.
+
+**UNCOVERED TOPICS:**
+1.  Cisco Discovery Protocol
+2.  EtherChannel (LACP)
+3.  Spanning Tree Protocol (STP)
+4.  WLAN Positioning
+5.  RIPv1 / RIPv2
+6.  HDLC, PPP, and Frame Relay
+7.  Introduction to VPN
+8.  Simple Network Management Protocol (SNMP)
+9.  First Hop Redundancy Protocols (FHRP)
+10. Quality of Service (QoS)
+11. Introduction to Security Fundamentals
+12. Threats and Vulnerabilities
+13. Password Policies
+14. Access Control Lists (ACLs)
+15. DHCP Snooping
+16. Dynamic ARP Inspection (DAI)
+17. Port Security
+18. Introduction to Wireless Principles
+19. Wi-Fi Channels
+20. WLAN Architecture
+21. Access Point Modes
+22. Wi-Fi Security
+23. Introduction to Security Automation and Programming
+24. Software Defined Networking (SDN)
+25. Cisco DNA Center
+26. REST-based APIs
+27. Configuration Management Mechanisms
+
+**PARTIALLY COVERED TOPICS in previous modules (To be covered in detail):**
+28. OSPF (We covered OSPFv2 concepts and configuration. We can delve deeper into areas, LSA types, and advanced configuration.)
+29. WAN Technologies (We introduced the concept. We will cover dedicated WAN technologies like HDLC/PPP in detail.)
+30. Device Access Control (We set basic passwords. We will cover AAA (Authentication, Authorization, Accounting) using TACACS+/RADIUS.)
+31. Virtual Private Networks (VPNs) (We introduced the concept with NAT. We will cover IPsec and SSL VPNs in detail.)
+32. Introduction to Wireless Principles (We introduced WLANs. We will cover radio frequencies, standards like 802.11a/b/g/n/ac/ax, and basic principles in detail.)
+
+I am ready to proceed with Topic 1: Cisco Discovery Protocol. Shall we begin?

@@ -1,0 +1,55 @@
+Topic 7: Routing
+
+Routing is the process of moving packets between different networks. A router makes this decision by using a routing table, which is essentially a map of the internetwork. The routing table contains known networks and the paths to reach them. Every time a router receives a packet, it looks at the destination IP address, checks its routing table, and forwards the packet to the next hop towards the final destination. If a route is not found in the table, the router discards the packet.
+
+The routing table can be populated in three ways:
+1. Directly Connected Networks: These are networks that are attached to the router's own interfaces. When you assign an IP address to an interface and activate it with `no shutdown`, the router automatically adds that network to its routing table. This is the most reliable type of route.
+2. Static Routes: These are routes that are manually configured by a network administrator. The administrator tells the router, "To reach network X, send the packets to next-hop router Y." This gives the administrator precise control over the path of traffic.
+3. Dynamic Routing Protocols: These are protocols where routers automatically share routing information with each other. If a link goes down, the routers communicate this change and dynamically update their routing tables without human intervention. Examples are OSPF and EIGRP.
+
+The key decision a router makes is based on the Longest Match Rule. When multiple routes in the table could match a destination, the router chooses the most specific one, i.e., the route with the longest subnet mask (the highest prefix length). For example, a route for 192.168.1.0/26 (subnet mask 255.255.255.192) is more specific than a route for 192.168.1.0/24 (subnet mask 255.255.255.0). If a packet is destined for 192.168.1.5, the router will choose the /26 route because it is a longer, more precise match.
+
+Let's examine the components of a static route command:
+`ip route [destination_network] [subnet_mask] [next_hop_ip | exit_interface]`
+
+`destination_network`: The network you want to add to the routing table.
+`subnet_mask`: The subnet mask of the destination network.
+`next_hop_ip`: The IP address of the next router in the path. This is the most common method.
+`exit_interface`: The local router's interface out which to send the packet. Used in specific cases like point-to-point links.
+
+A default static route is a catch-all route used when no other, more specific route exists in the routing table. It is used to send traffic towards the internet or a central corporate network. The destination is 0.0.0.0 with a subnet mask of 0.0.0.0, often written as 0.0.0.0/0. It represents "any" network.
+
+Verification Commands:
+`show ip route`: The most critical command. Displays the entire routing table.
+`ping` and `traceroute`: Used to test connectivity and the path taken.
+
+Assignment 7: Configuring Static Routes
+
+Objective: To understand how routers use manually configured routes to connect remote networks.
+1. In Packet Tracer, create a topology with three routers in a chain: R1, R2, R3.
+2. Connect R1 to R2 and R2 to R3 using serial cables (use Serial DCE cables). Set the DCE side clock rate on the connecting interfaces (e.g., `clock rate 64000` on the DCE interface).
+3. Configure IP addresses as follows:
+   R1: G0/0: 192.168.1.1/24 (connect a PC to this network with IP 192.168.1.10, gateway 192.168.1.1)
+   R1: S0/0/0: 10.1.1.1/30 (connected to R2)
+   R2: S0/0/0: 10.1.1.2/30 (connected to R1)
+   R2: S0/0/1: 10.1.1.5/30 (connected to R3)
+   R3: S0/0/1: 10.1.1.6/30 (connected to R2)
+   R3: G0/0: 192.168.2.1/24 (connect a PC to this network with IP 192.168.2.10, gateway 192.168.2.1)
+4. Configure each router with the necessary IP addresses on their interfaces and use `no shutdown`.
+5. Verify that directly connected routes are in the table. On R1, run `show ip route`. You should see `C 192.168.1.0/24` and `C 10.1.1.0/30`.
+6. Now, try to ping from the PC on the 192.168.1.0 network to the PC on the 192.168.2.0 network. It will fail. Why? R1 knows about 192.168.1.0 and 10.1.1.0, but it does not know how to reach 192.168.2.0.
+7. Configure static routes.
+   On R1: `ip route 192.168.2.0 255.255.255.0 10.1.1.2` (To get to 192.168.2.0, send it to R2 at 10.1.1.2)
+   On R3: `ip route 192.168.1.0 255.255.255.0 10.1.1.5` (To get to 192.168.1.0, send it to R2 at 10.1.1.5)
+8. Now check the routing tables on R1 and R3 again with `show ip route`. You should now see a static route denoted by an 'S'.
+9. Now try the ping from PC 192.168.1.10 to PC 192.168.2.10. It should be successful.
+10. (Optional) Configure a default route on R1 pointing to R2 for any unknown traffic: `ip route 0.0.0.0 0.0.0.0 10.1.1.2`.
+
+Glossary for Topic 7:
+Routing: The process of forwarding IP packets from one network to another.
+Routing Table: A database stored in a router that contains paths to known networks.
+Static Route: A route that is manually configured by an administrator.
+Default Route: A static route that matches all possible networks (0.0.0.0/0).
+Longest Match Rule: The rule that a router uses to select the most specific path when multiple routes exist.
+
+Are you ready to proceed to the next topic, Static Routing?

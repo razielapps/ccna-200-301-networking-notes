@@ -1,0 +1,61 @@
+Of course. Let's proceed.
+
+Topic 14: Introduction to Wireless Principles
+
+Wireless LANs (WLANs) use radio waves to transmit data through the air, eliminating the need for physical cables. This provides mobility and flexibility but introduces new challenges not found in wired networks, such as signal interference, security concerns, and shared medium access. The key standard governing WLANs is IEEE 802.11.
+
+Radio Frequency Basics:
+Wireless communication relies on Radio Frequency (RF) waves. Key properties include:
+Frequency: The number of times the wave oscillates per second, measured in Hertz (Hz). WLANs primarily use the 2.4 GHz and 5 GHz frequency bands.
+Wavelength: The physical distance between successive peaks of the wave. Higher frequencies have shorter wavelengths.
+Amplitude: The height of the wave, which correlates to signal strength or power.
+
+The 2.4 GHz and 5 GHz Bands:
+2.4 GHz Band:
+- Advantages: Better range and better at penetrating solid objects like walls.
+- Disadvantages: Only three non-overlapping channels (1, 6, 11). Highly congested because many devices use this band (e.g., Bluetooth, microwaves).
+5 GHz Band:
+- Advantages: More available channels (23+ non-overlapping). Less congested, leading to generally higher performance and less interference.
+- Disadvantages: Shorter range and less effective at penetrating solid objects.
+
+Wireless Topologies:
+Basic Service Set (BSS): The fundamental building block. This is a group of stations (devices) that communicate with each other. There are two types:
+- Independent BSS (Ad-hoc mode): Devices communicate directly with each other without any central device. This is rarely used.
+- Infrastructure BSS: This is the standard mode. All devices (clients) communicate through a central device called an Access Point (AP). The AP connects the wireless world to the wired network.
+
+Extended Service Set (ESS): When multiple APs are connected to the same wired network and broadcast the same network name (SSID), they form an ESS. This allows clients to roam seamlessly between APs while maintaining network connectivity.
+
+The Shared Medium and CSMA/CA:
+Unlike wired Ethernet which uses CSMA/CD, wireless uses Carrier Sense Multiple Access with Collision Avoidance (CSMA/CA). Because a wireless device cannot transmit and listen at the same time to detect a collision, it uses a method to avoid them.
+1. A device listens to see if the radio channel is idle (Carrier Sense).
+2. If the channel is busy, it waits a random backoff time.
+3. If the channel is idle, it sends a special message called a Ready-to-Send (RTS). The AP responds with a Clear-to-Send (CTS), which reserves the medium for that specific device.
+This RTS/CTS handshake helps to avoid collisions from "hidden nodes," devices that can hear the AP but not each other.
+
+Service Set Identifier (SSID):
+The SSID is the human-readable name of the wireless network that clients see when they scan for available networks. It is broadcast by the AP by default. An ESSID is the SSID used across an Extended Service Set (multiple APs).
+
+Assignment 14: Analyzing Wireless Signals and Building a Basic WLAN
+
+Objective: To observe wireless properties and configure a simple infrastructure wireless network.
+1. In Packet Tracer, use a Wireless Router (or a separate Access Point and Router) and two wireless-capable laptops.
+2. Open the physical view of the wireless router and the laptops. Notice the antennas. Move the laptops away from the router and observe how the signal strength indicator changes. This demonstrates how distance affects signal strength.
+3. Configure the wireless router.
+   - Set the SSID to "MyHomeNetwork".
+   - Set the band to 2.4 GHz. Observe the available channels. Manually set the channel to 6.
+   - Disable security for now to make initial connection easier.
+4. On the laptops, go to the "Desktop" tab > "PC Wireless". Select the "MyHomeNetwork" SSID and connect.
+5. Verify connectivity by pinging between the two laptops. They are communicating through the AP, not directly with each other, demonstrating Infrastructure BSS.
+6. Now, introduce an obstacle. In the physical view, place a wall between one laptop and the wireless router. Observe the signal strength drop dramatically. This demonstrates how physical obstructions impact wireless signals.
+7. Now, experiment with the 5 GHz band. Reconfigure the wireless router to broadcast a second SSID on the 5 GHz band. Connect one laptop to the 2.4 GHz network and the other to the 5 GHz network. They should still be able to ping each other because they are connected to the same logical device, which routes between its own interfaces.
+8. Use the "Simulation" mode to filter for wireless packets like Beacon frames (which broadcast the SSID) and data packets. Observe how the packets travel from the laptop to the AP and then to the destination.
+
+Glossary for Topic 14:
+RF: Radio Frequency waves used for wireless communication.
+SSID: The name of a wireless network.
+Access Point: The central device in an infrastructure wireless network that connects clients to the wired network.
+BSS: A group of wireless devices communicating through a single AP.
+ESS: A network of multiple APs sharing the same SSID.
+CSMA/CA: The media access method used in wireless to avoid collisions.
+
+Are you ready to proceed to the next topic, Wi-Fi Channels?

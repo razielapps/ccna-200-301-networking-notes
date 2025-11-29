@@ -1,0 +1,89 @@
+Topic 4: Initial Switch Setup Commands
+
+When you take a new Cisco switch out of the box and power it on, it has no configuration. This is a "default configuration." It will have no passwords, and its switch ports will be active and in the default VLAN 1. The initial setup involves applying a baseline configuration that makes the switch secure and manageable on your network. This process involves a specific sequence of commands that you must memorize.
+
+Here is the complete sequence of commands for an initial switch setup, explained step-by-step.
+
+Step 1: Enter Privileged EXEC Mode
+Switch> enable
+You are now in Privileged EXEC mode (Switch#). This is required to make any changes.
+
+Step 2: Enter Global Configuration Mode
+Switch# configure terminal
+You are now in Global Configuration mode (Switch(config)#). All device-wide commands are entered here.
+
+Step 3: Set the Hostname
+The hostname identifies the device on the network and appears in the prompt.
+Switch(config)# hostname SW1
+The prompt changes to SW1(config)#.
+
+Step 4: Set the Enable Secret Password
+This password encrypts access to Privileged EXEC mode. It is stored in a hashed format. Always use `enable secret` instead of the older, plain-text `enable password`.
+SW1(config)# enable secret mySecurePassword123
+
+Step 5: Configure the Management Interface (SVI)
+The switch needs an IP address for in-band management. This is assigned to the Switch Virtual Interface (SVI) for the native management VLAN, which is typically VLAN 1.
+SW1(config)# interface vlan 1
+SW1(config-if)# ip address 192.168.1.10 255.255.255.0
+SW1(config-if)# no shutdown
+The `no shutdown` command administratively enables the interface.
+
+Step 6: Set the Default Gateway
+If you need to manage the switch from a different network, it must know how to reach it. The default gateway is the IP address of the local router.
+SW1(config)# ip default-gateway 192.168.1.1
+
+Step 7: Secure the Console Port
+This sets a password for anyone connecting via the physical console cable.
+SW1(config)# line console 0
+SW1(config-line)# password consolePassword
+SW1(config-line)# login
+The `login` command enables password checking for the console line.
+
+Step 8: Secure the VTY Lines for Remote Access
+This sets a password for Telnet or SSH access. We will later restrict this to SSH only.
+SW1(config)# line vty 0 15
+SW1(config-line)# password vtyPassword
+SW1(config-line)# login
+SW1(config-line)# transport input ssh
+The `transport input ssh` command is critical. It disables Telnet and allows only SSH connections.
+
+Step 9: Create a Local User Account (Best Practice)
+Using a local username and password is more secure than just a line password.
+SW1(config)# username admin secret adminPassword123
+
+Step 10: Encrypt All Plain-Text Passwords
+This command encrypts passwords like the console and VTY line passwords that are otherwise visible in plain text in the configuration.
+SW1(config)# service password-encryption
+
+Step 11: Save the Configuration
+All changes made are in the "running-config" (in RAM). If the switch loses power, this configuration is lost. You must save it to the "startup-config" (in NVRAM).
+SW1# copy running-config startup-config
+
+Assignment 4: Performing an Initial Switch Setup
+
+Objective: To apply a complete, secure baseline configuration to a new switch.
+1. In Packet Tracer, add a new 2960 switch to your workspace.
+2. Connect your PC to the switch using a console cable and open the terminal.
+3. You will start at the `Switch>` prompt. Follow the command sequence above exactly.
+4. For the hostname, use your initials (e.g., `hostname AS-SW1`).
+5. For the IP address, use 10.1.1.5 with a mask of 255.255.255.0.
+6. For the default gateway, use 10.1.1.1.
+7. Set all passwords to something you will remember.
+8. After entering all commands, use the `copy run start` command to save.
+9. To verify your work, run the following commands from privileged EXEC mode and check the output:
+   - `show running-config`: Check for your hostname, encrypted passwords, and IP address.
+   - `show interface vlan 1`: Verify the interface is up and has the correct IP.
+   - `show ip default-gateway`: Verify the gateway is set.
+10. Disconnect the console cable. Connect your PC to a switch port with an Ethernet cable. Set your PC's IP address to 10.1.1.10/24.
+11. Open the command prompt on the PC and ping the switch's IP (10.1.1.5). It should be successful.
+12. Now, use an SSH client (like PuTTY or the Packet Tracer SSH client) to connect to 10.1.1.5. You should be prompted for the username and password you created.
+
+Glossary for Topic 4:
+Hostname: The unique name of a device on the network.
+Enable Secret: The encrypted password for securing privileged EXEC mode.
+Default Gateway: The IP address of the router that provides a path to other networks.
+Service Password-Encryption: A command that obscures plain-text passwords in the configuration file.
+Running-Config: The active configuration stored in the device's RAM.
+Startup-Config: The saved configuration stored in the device's non-volatile memory (NVRAM).
+
+Are you ready to proceed to the next topic, VLAN?

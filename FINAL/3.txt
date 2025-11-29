@@ -1,0 +1,64 @@
+Of course. Let's proceed to one of the most critical protocols in switching.
+
+Topic 3: Spanning Tree Protocol (STP)
+
+In a switched network with redundant paths, a major problem can occur: Layer 2 loops. If multiple paths exist between switches and there is no mechanism to block some of them, broadcast, multicast, and unknown unicast frames will circulate forever. This creates a broadcast storm, which cripples the network by consuming all available bandwidth and switch CPU resources.
+
+Spanning Tree Protocol (STP) was designed to solve this problem. Its sole purpose is to prevent Layer 2 loops while providing redundancy. STP creates a logical loop-free topology for the entire network by strategically blocking certain redundant paths. The blocked paths act as a backup; if the primary active path fails, STP unblocks a backup path automatically.
+
+How STP Works:
+STP uses an algorithm to elect a Root Bridge for the entire network. This is the central reference point. All other switches determine the best path to get to the Root Bridge. The protocol then ensures only one active path exists from any switch to the Root Bridge by placing redundant ports into a Blocking state.
+
+Key STP Concepts and Elections:
+1. Root Bridge: The switch that is the root of the spanning tree. There is only one per VLAN (in older STP). The switch with the lowest Bridge ID becomes the Root Bridge. The Bridge ID is made of a Priority value (default 32768) and the switch's MAC address.
+2. Root Port: On every non-root bridge, this is the port that has the best path to the Root Bridge. Each non-root switch has exactly one Root Port.
+3. Designated Port: On every network segment (link between two switches), this is the port that is closest to the Root Bridge. This port forwards traffic. The other end of the link will be a Root Port or a Blocked Port.
+4. Blocked/Alternate Port: A port that is not a Root Port or a Designated Port. Its job is to be physically connected but logically disabled to prevent a loop. It listens for BPDUs in case the topology changes.
+
+STP decides the "best path" based on a series of criteria, in this order:
+1. Lowest Root Bridge ID
+2. Lowest Path Cost to the Root Bridge
+3. Lowest Sender Bridge ID
+4. Lowest Sender Port ID
+
+STP sends special messages called BPDUs (Bridge Protocol Data Units) to share information and perform these elections.
+
+STP Port States:
+A port going through the STP process goes through several states:
+Blocking: The port does not forward frames but listens for BPDUs.
+Listening: The port listens for BPDUs and begins to transition to a forwarding state, but does not learn MAC addresses yet.
+Learning: The port learns MAC addresses and builds its table but still does not forward frames.
+Forwarding: The port is fully operational, forwarding frames and learning MAC addresses.
+
+This process means there is a delay of 30-50 seconds before a port begins forwarding after being connected, which is a key consideration.
+
+Modern STP Versions:
+PVST+ (Per-VLAN Spanning Tree): Cisco's default. Runs a separate STP instance for each VLAN, allowing for load balancing by having different root bridges for different VLANs.
+Rapid PVST+: The modern, faster version of PVST+. It is the recommended version. It greatly reduces the convergence time (port state delay) from 30-50 seconds to under 10 seconds.
+
+Basic STP Commands:
+show spanning-tree: The primary command to view the STP status. It shows the root bridge, this switch's role, and the state of all ports.
+show spanning-tree vlan [vlan-id]: Shows STP information for a specific VLAN.
+spanning-tree vlan [vlan-id] root primary: A convenient command that lowers this switch's priority to become the root bridge for that VLAN.
+
+Assignment 3: Observing STP and Forcing a Root Bridge Election
+
+Objective: To create a network loop, observe STP blocking a port, and then manipulate the root bridge election.
+1. In Packet Tracer, create a triangle of three switches. Connect SW1 to SW2, SW2 to SW3, and SW3 to SW1.
+2. Connect a PC to each switch. Assign all PCs an IP in the same subnet (e.g., 192.168.1.0/24).
+3. Without STP, this would be a loop. Let's see STP in action. On each switch, run the command show spanning-tree.
+4. Examine the output. One switch will be elected the Root Bridge. Note which ports on the other switches are in the "FWD" (Forwarding) state and which are in the "BLK" (Blocking) state. STP has logically broken the loop.
+5. Verify the loop is broken. Ping between all PCs. It should work, proving connectivity exists even though one physical path is logically blocked.
+6. Now, force a new Root Bridge. Suppose you want SW2 to be the root. On SW2, go to global config and enter: spanning-tree vlan 1 root primary. This command automatically sets the priority to a low value (24576).
+7. Wait a moment for STP to reconverge. Then, run show spanning-tree on all switches again. You should now see that SW2 is the Root Bridge. The blocking port may have moved to a different link.
+8. Test connectivity again with pings. It should still work, demonstrating that STP reconverged without causing an outage.
+
+Glossary for Topic 3:
+STP: A Layer 2 protocol that prevents loops in a switched network.
+Root Bridge: The central reference switch in an STP topology.
+BPDU: The messages switches use to share STP information.
+Blocking State: A port state where the port does not forward traffic to prevent a loop.
+Convergence: The process of the network stabilizing after a topology change.
+PVST+: Cisco's version of STP that runs a separate instance per VLAN.
+
+Are you ready to proceed to the next topic?

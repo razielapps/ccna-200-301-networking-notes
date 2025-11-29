@@ -1,0 +1,70 @@
+Of course. Let's proceed.
+
+Topic 10: Access Control Lists (ACLs)
+
+An Access Control List (ACL) is a sequential list of permit or deny statements that control whether network traffic is forwarded or blocked at a router's interface. Think of it as a bouncer at a club with a guest list. The bouncer checks every person (packet) against the list to see if they are allowed in (permitted) or must be turned away (denied). ACLs are a fundamental tool for network security and traffic management.
+
+ACLs are used for:
+1. Security: Filtering traffic to or from a network segment, for example, blocking a hostile IP address.
+2. Traffic Control: Restricting access to specific services, for example, allowing only HTTP/HTTPS traffic to a web server.
+3. Identifying Traffic: ACLs are also used by other processes to identify specific types of traffic for features like QoS, VPNs, and NAT.
+
+There are two main types of ACLs:
+1. Standard ACLs: These are simple and only filter traffic based on the source IP address. They are identified by numbers 1-99 or 1300-1999.
+   Example: `access-list 10 deny 192.168.1.0 0.0.0.255`
+
+2. Extended ACLs: These are more powerful and can filter traffic based on source IP, destination IP, protocol (IP, TCP, UDP, ICMP), and port number. They are identified by numbers 100-199 or 2000-2699.
+   Example: `access-list 110 permit tcp 192.168.1.0 0.0.0.255 host 10.1.1.100 eq 80`
+
+ACLs use Wildcard Masks, which are the inverse of a subnet mask. A '0' in the wildcard mask means the corresponding bit in the IP address must match exactly. A '1' means the bit can be ignored. The wildcard mask 0.0.0.0 means the entire IP address must match, which is why the keyword `host` can be used instead (e.g., `host 10.1.1.100` is the same as `10.1.1.100 0.0.0.0`). The wildcard mask 255.255.255.255 means any IP address, which is why the keyword `any` is used.
+
+How ACLs Work:
+- ACLs are processed from the top down, line by line. The first matched statement is executed, and no further statements are checked.
+- There is an implicit "deny any" at the end of every ACL. This means if a packet does not match any of the permit statements in the ACL, it will be automatically denied.
+- ACLs must be applied to an interface in a specific direction to take effect:
+  - **in**: The ACL filters traffic as it enters the interface.
+  - **out**: The ACL filters traffic as it exits the interface.
+
+Basic Extended ACL Configuration and Application:
+Step 1: Create the ACL.
+`Router(config)# access-list 110 permit tcp 192.168.10.0 0.0.0.255 any eq 80`
+`Router(config)# access-list 110 permit tcp 192.168.10.0 0.0.0.255 any eq 443`
+`Router(config)# access-list 110 deny ip any any` (This is explicit, but the implicit deny already does this)
+
+Step 2: Apply the ACL to an interface.
+`Router(config)# interface GigabitEthernet0/0`
+`Router(config-if)# ip access-group 110 in`
+
+This ACL allows users on the 192.168.10.0/24 network to browse the web (HTTP and HTTPS) but denies all other IP traffic from that network as it enters the router's G0/0 interface.
+
+Verification Commands:
+`show access-lists`: Displays all configured ACLs and shows a counter for how many packets have matched each line.
+`show ip interface [interface]`: Shows which ACLs are applied to the interface and in which direction.
+
+Assignment 10: Creating and Applying an Extended ACL
+
+Objective: To configure an ACL to secure a network server.
+1. In Packet Tracer, create a topology with two routers. Connect R1 to a switch representing the "Internal Network" (e.g., 192.168.10.0/24). Connect R1 to R2 via a serial link. Connect R2 to a switch representing the "Server Network" with a web server at 172.16.1.100.
+2. Configure IP addresses and routing (static or dynamic) so that a PC on the Internal Network can ping and access the web server.
+3. Test connectivity from the PC to the server. The ping and web access should work.
+4. The goal is to secure the server. We want to allow the internal network to access the server's web page but block them from pinging it. On R2, create an extended ACL.
+   `R2(config)# access-list 101 permit tcp 192.168.10.0 0.0.0.255 host 172.16.1.100 eq 80`
+   `R2(config)# access-list 101 deny icmp 192.168.10.0 0.0.0.255 host 172.16.1.100 echo`
+   `R2(config)# access-list 101 permit ip any any` (This allows all other IP traffic, including the server's responses)
+5. Apply this ACL to the interface closest to the server, in the INBOUND direction. This will filter traffic as it comes into the router toward the server network.
+   `R2(config)# interface GigabitEthernet0/0` (The interface connected to the server network)
+   `R2(config-if)# ip access-group 101 in`
+6. Now, test from the PC.
+   - Try to access the web server using its IP address in a browser. It should still work.
+   - Try to ping the server. The ping should now fail (Request timed out).
+7. Verify your ACL is working by checking the counters.
+   On R2, run `show access-lists 101`. You will see the number of packets that have matched each line. You should see hits on the first line (permit tcp) from your web browsing and hits on the second line (deny icmp) from your failed pings.
+
+Glossary for Topic 10:
+ACL: A sequential list of permit/deny statements used for traffic filtering.
+Standard ACL: Filters based on source IP address only.
+Extended ACL: Filters based on source/destination IP, protocol, and port.
+Wildcard Mask: A mask used with ACLs to specify a range of IP addresses.
+Implicit Deny: The automatic deny all statement at the end of every ACL.
+
+Are you ready to proceed to the next topic?

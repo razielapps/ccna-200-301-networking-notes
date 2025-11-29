@@ -1,0 +1,45 @@
+Of course. Let's proceed.
+
+Topic 15: Wi-Fi Channels
+
+A Wi-Fi channel is a smaller segment of the overall frequency band used for communication. Think of the 2.4 GHz band as a wide highway, and the channels are the individual lanes on that highway. To avoid interference, you want to use lanes that are spaced far apart. Using overlapping channels is like having cars swerve between lanes, causing collisions and slowing everyone down.
+
+The 2.4 GHz Band:
+This band is divided into 14 channels, but the number available varies by country. The key concept here is channel width. The standard width for a channel in the 2.4 GHz band is 20 MHz. However, each channel is only 5 MHz apart. This means that a 20 MHz wide channel actually spills over into several adjacent channels.
+
+Because of this overlap, there are only three channels in the 2.4 GHz band that are considered non-overlapping: Channels 1, 6, and 11. These channels have enough separation that their signals do not significantly interfere with each other. In any wireless deployment in the 2.4 GHz band, you should only use channels 1, 6, and 11. If two adjacent APs use the same channel, they must share the airtime, reducing performance for all clients. This is called co-channel interference. If they use overlapping channels (like 1 and 2), the signals will directly corrupt each other, which is even worse.
+
+The 5 GHz Band:
+The 5 GHz band is much wider and has many more available channels. It also uses a standard 20 MHz channel width, but because the channels are spaced 20 MHz apart, they are naturally non-overlapping. This is a major advantage of the 5 GHz band. Common non-overlapping channels in the 5 GHz band include 36, 40, 44, 48, 149, 153, 157, 161, and 165.
+
+Furthermore, the 5 GHz band supports Channel Bonding. This is the process of combining adjacent channels to create a wider channel, which increases the potential data throughput (speed). For example, two 20 MHz channels can be bonded to create a 40 MHz channel. There are also 80 MHz and 160 MHz channels. However, a wider channel means there are fewer non-overlapping channels available. A 40 MHz channel uses up two of the 20 MHz channels, and an 80 MHz channel uses up four.
+
+Dynamic Frequency Selection (DFS) is a feature in the 5 GHz band that allows APs to detect radar signals (like from weather or military installations) and automatically switch to a different channel to avoid interference. Channels that require DFS are often unused by default but can provide valuable extra spectrum if enabled.
+
+Channel Planning:
+In a multi-AP environment, careful channel planning is essential. The goal is to assign non-overlapping channels to APs that are within range of each other. For the 2.4 GHz band, you would assign channels 1, 6, and 11 in a repeating pattern. For the 5 GHz band, you have many more options, but you must still ensure that adjacent APs do not use the same channel.
+
+Most enterprise-grade wireless systems have an Automated Channel Management feature where the APs automatically scan the radio frequency environment and select the best channel with the least interference.
+
+Assignment 15: Analyzing and Planning Wi-Fi Channels
+
+Objective: To observe channel overlap and configure a multi-AP network with proper channel planning.
+1. In Packet Tracer, place three Access Points on the workspace. Do not connect them to any wired network for this experiment; we are only analyzing RF.
+2. Configure all three APs for the 2.4 GHz band. Set the SSID for all to "TestNetwork".
+3. Initially, set all three APs to the same channel, for example, channel 1.
+4. Use a laptop and go to the "Desktop" tab > "PC Wireless". Open the "Wireless Notebook" and perform a site survey. You will see all three APs broadcasting the same SSID on the same channel. Note the signal strengths.
+5. Now, change the channels on the APs to the three non-overlapping channels: set AP1 to channel 1, AP2 to channel 6, and AP3 to channel 11.
+6. Perform the site survey again with the laptop. You will now see the three APs on three distinct, non-overlapping channels. This is the correct configuration for a multi-AP network in the 2.4 GHz band.
+7. Now, experiment with the 5 GHz band. Change all three APs to use the 5 GHz band.
+8. Set AP1 to channel 36, AP2 to channel 40, and AP3 to channel 44. Perform a site survey. These channels are non-overlapping.
+9. Now, on one AP, enable channel bonding. Find the setting for channel width and change it from 20 MHz to 40 MHz. When you do this, you will see that the channel selection changes. For example, it might now show channel 38, which represents the bonded channel using the spectrum of both 36 and 40. If you try to set another nearby AP to channel 40, it may not be available because it now overlaps with the bonded channel.
+10. This demonstrates the trade-off of channel bonding: higher potential speed for individual clients, but fewer available channels for your overall network design.
+
+Glossary for Topic 15:
+Channel: A designated segment of a frequency band used for communication.
+Non-overlapping Channels: Channels that do not interfere with each other.
+Channel Bonding: Combining adjacent channels to create a wider channel for higher throughput.
+Co-channel Interference: Reduced performance caused by multiple APs using the same channel.
+DFS: A mechanism for APs to avoid interference with radar systems.
+
+Are you ready to proceed to the next topic, WLAN Architecture?

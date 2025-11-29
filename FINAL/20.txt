@@ -1,0 +1,55 @@
+Of course. Let's proceed.
+
+Topic 20: Software Defined Networking (SDN)
+
+Traditional network devices like switches and routers are autonomous. Each device makes its own forwarding decisions based on its own local configuration and routing tables. This distributed model works but makes the network complex to manage and slow to adapt to changing requirements. Software Defined Networking (SDN) is an architecture that fundamentally changes this by decoupling the network's control plane from the data plane.
+
+The Key Idea of SDN: Separation of Control and Forwarding
+- Data Plane (Forwarding Plane): This is the "muscle" of the network. It is responsible for the actual forwarding of packets based on a set of rules. It resides on the network devices (switches, routers).
+- Control Plane: This is the "brain" of the network. It is responsible for making decisions about where traffic should be sent. It builds routing tables, runs protocols like OSPF, and makes all intelligent decisions.
+
+In an SDN architecture, the control plane is removed from individual devices and centralized in a software-based controller. The network devices become simple, dumb forwarding elements that follow instructions from the controller.
+
+The SDN Architecture has three distinct layers:
+1. Infrastructure Layer: This consists of the physical or virtual network switches. They only handle the data plane. Their job is to forward packets based on a flow table, which is populated by the controller.
+2. Control Layer: This is the SDN Controller. It is the central brain of the network. It has a global view of the entire network topology. Applications talk to the controller, and the controller translates application requirements into rules, which it then pushes down to the switches in the infrastructure layer.
+3. Application Layer: These are the software programs that communicate with the SDN Controller via its Northbound API. These applications define the network's behavior. For example, a security application could tell the controller to block a specific type of traffic across the entire network.
+
+How SDN Works: The OpenFlow Protocol
+OpenFlow is a standard protocol that allows an SDN Controller to communicate with the data plane devices. The controller installs flow entries in the switch's flow table. Each flow entry is a rule that matches specific packet headers (like source IP, destination IP, protocol) and defines an action (like forward to a port, drop, send to controller). When a switch receives a packet for which it has no matching flow entry, it sends the packet to the controller. The controller then makes a decision, creates a new flow rule, and installs it on the switch and potentially on other switches along the path.
+
+Benefits of SDN:
+- Centralized Management: The entire network can be managed from a single controller.
+- Programmability: The network's behavior can be programmed by software applications, making it highly adaptable.
+- Agility: New network policies can be deployed across the entire network in seconds.
+- Innovation: It allows for the creation of custom applications for traffic engineering, security, and monitoring.
+
+A practical example of an SDN solution in the Cisco ecosystem is the Application Centric Infrastructure (ACI). ACI uses a policy-based model to define the network's desired state. You define policies (e.g., "Web servers can talk to database servers on port 3306") and the ACI controller (the Application Policy Infrastructure Controller - APIC) automatically programs the entire network fabric to enforce these policies.
+
+Assignment 20: Conceptualizing SDN with a Simple Flow Table
+
+Objective: To understand how a switch's forwarding logic changes from self-deciding to controller-directed.
+1. This is a thought experiment as Packet Tracer's SDN capabilities are limited.
+2. Imagine a simple topology with one SDN Controller and three OpenFlow-enabled switches (S1, S2, S3) connected in a line: S1 -- S2 -- S3. A client is connected to S1 and a server is connected to S3.
+3. In a traditional network, S1, S2, and S3 would run STP and learn MAC addresses to build their own forwarding tables.
+4. In an SDN network, their flow tables are initially empty.
+5. The client sends its first packet to the server. The packet arrives at S1.
+6. S1 checks its flow table. There is no rule matching this packet.
+7. S1 encapsulates the packet and sends it to the SDN Controller (Packet-In message).
+8. The SDN Controller, which has a map of the entire network, calculates the best path for this flow: S1 -> S2 -> S3.
+9. The controller then proactively programs each switch along the path with a specific flow rule.
+   - It tells S1: "For packets from the client to the server, send them out the port connected to S2."
+   - It tells S2: "For packets from the client to the server, send them out the port connected to S3."
+   - It tells S3: "For packets from the client to the server, send them out the port connected to the server."
+10. The controller also sends the original packet back to S1 to be forwarded (Packet-Out message).
+11. S1 now forwards the packet to S2. S2 and S3 now have flow entries, so they forward the packet immediately without consulting the controller.
+12. All subsequent packets for this flow are forwarded at line speed by the switches based on the installed flow rules. The controller is only involved in the first packet to set up the path.
+
+Glossary for Topic 20:
+SDN: An architecture that separates the network control plane from the data plane.
+Control Plane: The intelligence that makes decisions about how traffic should be routed.
+Data Plane: The component that forwards traffic based on rules from the control plane.
+SDN Controller: The centralized software that manages the control plane for the network.
+OpenFlow: A protocol that allows an SDN controller to communicate with switches.
+
+Are you ready to proceed to the next topic, Cisco DNA Center?

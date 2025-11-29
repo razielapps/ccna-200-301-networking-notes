@@ -1,0 +1,57 @@
+Of course. Let's proceed.
+
+Topic 18: Wi-Fi Security
+
+Securing a wireless network is fundamentally more challenging than securing a wired one because the physical medium—radio waves—is available to anyone within range. Without proper security, an attacker can easily eavesdrop on communications, gain unauthorized access to the network, or launch attacks. Wi-Fi security has evolved through several generations to address these threats.
+
+The Evolution of Wi-Fi Security:
+
+1. WEP (Wired Equivalent Privacy):
+WEP was the original security protocol for 802.11. It was designed to provide a level of confidentiality equivalent to a wired network. However, WEP has critical cryptographic flaws that make it trivial to crack. It uses a static, pre-shared key that is rarely changed. Attackers can capture enough packets to recover the key in minutes. WEP is completely insecure and must never be used.
+
+2. WPA (Wi-Fi Protected Access):
+WPA was introduced as an interim solution to replace WEP. It uses the Temporal Key Integrity Protocol (TKIP). TKIP dynamically generates a new encryption key for every packet, which addresses the static key weakness of WEP. However, WPA is still based on the RC4 cipher, which has vulnerabilities. While better than WEP, WPA is also now considered weak and should be avoided.
+
+3. WPA2 (Wi-Fi Protected Access 2):
+WPA2 is the long-standing, robust security standard. It mandates the use of AES-CCMP (Advanced Encryption Standard - Counter Mode Cipher Block Chaining Message Authentication Code Protocol), a much stronger encryption algorithm. WPA2 operates in two modes:
+- WPA2-Personal (Pre-Shared Key - PSK): Uses a passphrase that is shared among all users. This is common for home and small office networks. The security relies on the strength and secrecy of the passphrase.
+- WPA2-Enterprise: This is the standard for corporate and enterprise networks. It requires a RADIUS (Remote Authentication Dial-In User Service) server. Instead of a single shared password, each user provides unique credentials (username/password) or uses a digital certificate. This provides individual accountability and is far more secure than a shared key.
+
+4. WPA3 (Wi-Fi Protected Access 3):
+WPA3 is the latest generation of security, addressing weaknesses in WPA2.
+- WPA3-Personal: Uses Simultaneous Authentication of Equals (SAE), which provides stronger protection against offline dictionary attacks. Even if an attacker captures the handshake, they cannot attempt to guess the password offline.
+- WPA3-Enterprise: Offers an optional 192-bit cryptographic suite for higher security requirements (like government and finance).
+- Enhanced Open: Provides individualized data encryption even on "open" public Wi-Fi networks without a password.
+
+Authentication Methods in WPA2/WPA3-Enterprise:
+- EAP (Extensible Authentication Protocol) is a framework, not a single protocol. It defines how authentication will be performed.
+- EAP-TLS (Transport Layer Security) is considered one of the most secure methods as it uses digital certificates on both the server and the client, providing mutual authentication.
+- EAP-FAST (Flexible Authentication via Secure Tunneling) is a Cisco protocol that provides secure authentication without certificates.
+- PEAP (Protected EAP) is very common. It creates a secure TLS tunnel first, and then another authentication method (like MSCHAPv2) is used inside the tunnel to authenticate the user.
+
+A crucial best practice is to hide the SSID. This is a weak form of "security through obscurity." The AP stops broadcasting the SSID in its beacon frames, so it won't show up in a typical scan. However, the SSID is still visible in other management frames, like probe requests and responses, and can be easily discovered by a determined attacker with simple tools. It should not be relied upon for security.
+
+Assignment 18: Configuring WPA2-Personal and Analyzing the Four-Way Handshake
+
+Objective: To configure WPA2-PSK security and observe the authentication process.
+1. In Packet Tracer, use a wireless router and a laptop.
+2. Configure the wireless router.
+   - Set the SSID to "SecureNet".
+   - Set the security mode to WPA2-Personal.
+   - Set the Pre-shared Key (Passphrase) to a complex password: "CCNA2024!Secure".
+3. On the laptop, go to the "Desktop" tab > "PC Wireless". You should see the "SecureNet" SSID. Select it and enter the passphrase to connect.
+4. Verify connectivity. The laptop should receive an IP address and have network access.
+5. Now, let's analyze the connection process. Enter the "Simulation" mode in Packet Tracer.
+6. Set the event list filters to show only DHCP and WPA2 events. Disconnect the laptop from the wireless network and then reconnect it while the simulation is running.
+7. Observe the packets exchanged. You will see the WPA2 Four-Way Handshake. This is a critical sequence of four messages between the client and the AP used to mutually prove that they both know the Pre-shared Key (PSK) without ever sending the key itself over the air. The handshake is used to derive the Pairwise Transient Key (PTK), which is the key that will actually be used to encrypt the data traffic.
+8. The fact that the handshake occurs proves that security is active. An attacker capturing this traffic would see the handshake but would need the original PSK to derive the same PTK and decrypt the data.
+9. (Optional) If your version of Packet Tracer allows, try configuring an open network (no security) and repeat the simulation. Notice the absence of the WPA2 handshake, demonstrating that the connection is unencrypted.
+
+Glossary for Topic 18:
+WPA2: The robust security standard using AES encryption.
+PSK: A shared passphrase used for authentication in WPA2-Personal.
+Enterprise Security: A model using a RADIUS server for individual user authentication.
+Four-Way Handshake: The process in WPA2 that confirms knowledge of the PSK and derives the encryption key.
+RADIUS: A protocol for centralizing authentication, authorization, and accounting.
+
+Are you ready to proceed to the next topic, Introduction to Security Automation and Programming?

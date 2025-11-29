@@ -1,0 +1,82 @@
+Of course. Let's proceed.
+
+Topic 22: REST-based APIs
+
+In the previous topics on automation and SDN, we discussed APIs at a conceptual level. Now we will dive deeper into REST-based APIs, which are the standard for modern network programmability. REST, or Representational State Transfer, is an architectural style for designing networked applications. A REST API is a set of rules and conventions for building and interacting with web services.
+
+Think of a REST API as a waiter in a restaurant. You (the client) have a menu of available items (the API endpoints). You tell the waiter what you want (send a request). The waiter goes to the kitchen (the server), gets your food (the data or performs an action), and brings it back to you (sends a response). The waiter provides a standardized interface between you and the kitchen.
+
+Key Principles of REST:
+
+1. Resources: Everything is a resource. In networking, a resource could be an interface, a VLAN, a route, or the entire device configuration. Each resource is uniquely identified by a URI (Uniform Resource Identifier), which is often a URL.
+
+2. HTTP Methods (Verbs): REST uses standard HTTP methods to define the action to be performed on a resource.
+   - GET: Retrieve data from a resource. This is a read-only operation and is safe. Example: Get the status of an interface.
+   - POST: Create a new resource. Example: Create a new user account on the device.
+   - PUT: Update an existing resource. It typically replaces the entire resource. Example: Update the entire configuration of an interface.
+   - PATCH: Partially update an existing resource. This is more efficient than PUT if you only need to change one field. Example: Change only the description of an interface.
+   - DELETE: Remove a resource. Example: Delete a static route.
+
+3. Statelessness: Each request from a client to a server must contain all the information needed to understand and process the request. The server does not store any session context about the client between requests.
+
+4. Representation: Resources are returned in a structured data format, most commonly JSON. The client and server agree on the format through the HTTP `Content-Type` header (e.g., `application/json`).
+
+A typical REST API call to a network device has these components:
+- The HTTP Method (e.g., GET)
+- The URL Endpoint (e.g., `https://192.168.1.1/restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=1`)
+- Headers: These provide metadata. Crucial headers include:
+  - `Authorization`: Contains credentials (like a Bearer token) to authenticate the request.
+  - `Accept`: Tells the server what data format the client wants in response (e.g., `application/yang-data+json`).
+  - `Content-Type`: In POST/PUT requests, tells the server the format of the data being sent.
+- Body (for POST, PUT, PATCH): The actual data being sent to the server, formatted in JSON.
+
+Example: Using a REST API to Configure an Interface
+Let's say you want to configure the IP address on GigabitEthernet1 on a router at 192.168.1.1.
+
+1. You would send an HTTP PATCH request.
+2. The URL would be: `https://192.168.1.1/restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=1`
+3. The `Authorization` header would contain your token.
+4. The `Content-Type` header would be `application/yang-data+json`.
+5. The body of the request would be a JSON object:
+```json
+{
+  "Cisco-IOS-XE-native:GigabitEthernet": {
+    "name": "1",
+    "ip": {
+      "address": {
+        "primary": {
+          "address": "10.1.1.1",
+          "mask": "255.255.255.0"
+        }
+      }
+    }
+  }
+}
+```
+The router's REST API would process this request and configure the interface accordingly, returning an HTTP success code (like 200 OK) if it worked.
+
+Assignment 22: Making a REST API Call to a Network Device
+
+Objective: To use a command-line tool (curl) to programmatically retrieve information from a device's REST API.
+1. In a real lab environment with a device that has a REST API enabled (like a CSR1000v or a physical device with the right image), ensure the RESTCONF feature is enabled.
+2. From a computer with network connectivity to the device, open a command prompt or terminal.
+3. We will use `curl`, a common command-line tool for transferring data with URLs.
+4. Construct a `curl` command to retrieve the device's interface information.
+   The basic syntax is: `curl -X GET -u "username:password" -H "Accept: application/yang-data+json" "https://<device_ip>/restconf/data/<yang_model>"`
+   Example:
+   `curl -X GET -u "admin:cisco123" -k -H "Accept: application/yang-data+json" "https://192.168.1.1/restconf/data/Cisco-IOS-XE-interfaces-oper:interfaces"`
+   - `-X GET`: Specifies the HTTP method.
+   - `-u "admin:cisco123"`: Provides the username and password for authentication.
+   - `-k`: Tells curl to allow "insecure" SSL connections (useful for lab devices with self-signed certificates).
+   - `-H "Accept: application/yang-data+json"`: The header telling the device we want the data in JSON format.
+5. Run the command. If successful, the device's REST API will return a stream of JSON data to your terminal, listing all interfaces and their operational status (up/down, IP address, etc.).
+6. This demonstrates that you have programmatically pulled live operational data from a network device without using SSH or the CLI. This data could now be fed into a script, a monitoring system, or a custom dashboard.
+
+Glossary for Topic 22:
+REST API: An API that uses HTTP requests to manage resources.
+HTTP Methods: Verbs like GET and POST that define the action in an API call.
+URI/URL: The address used to identify a resource in an API call.
+JSON: The primary data format used for sending and receiving data in REST APIs.
+curl: A command-line tool used to transfer data with URLs.
+
+Are you ready to proceed to the final topic, Configuration Management Mechanisms?

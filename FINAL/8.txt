@@ -1,0 +1,71 @@
+Of course. Let's proceed.
+
+Topic 8: First Hop Redundancy Protocols (FHRP)
+
+In a typical network, hosts are configured with a single default gateway IP address. This creates a single point of failure. If that router fails, all hosts lose their connection to external networks. First Hop Redundancy Protocols solve this problem by allowing multiple routers to share a single virtual IP address and MAC address, which is used as the default gateway for hosts. If one router fails, another automatically and seamlessly takes over, with minimal disruption.
+
+There are three main FHRP protocols:
+
+1. HSRP (Hot Standby Router Protocol): This is a Cisco-proprietary protocol. In HSRP, a group of routers form a standby group. One router is elected as the Active router, and it handles all traffic sent to the virtual IP. Another router is elected as the Standby router, ready to take over if the Active fails. The other routers remain in a Listen state. HSRP uses a virtual MAC address in the format 0000.0c07.acXX, where XX is the group number. HSRP version 1 uses multicast address 224.0.0.2, while version 2 uses 224.0.0.102.
+
+2. VRRP (Virtual Router Redundancy Protocol): This is an open standard (RFC 3768) that provides similar functionality to HSRP. The terminology is different: the master router is equivalent to the active router, and the backup routers are equivalent to the standby routers. VRRP uses a virtual MAC address in the format 0000.5e00.01XX, where XX is the group number. It is often used in multi-vendor environments.
+
+3. GLBP (Gateway Load Balancing Protocol): This is a Cisco-proprietary protocol that not only provides redundancy but also enables true load balancing across multiple routers. While HSRP and VRRP have one active router and the others are idle backups, GLBP allows all routers in the group to be used for forwarding traffic. A single router is elected as the Active Virtual Gateway (AVG), which assigns a virtual MAC address to each router in the group (called Active Virtual Forwarders - AVFs). The AVG then responds to ARP requests for the virtual IP with different virtual MAC addresses, effectively distributing the hosts across the available routers.
+
+HSRP is the most common FHRP for the CCNA. Key HSRP concepts:
+Virtual IP Address: The shared IP address that hosts use as their default gateway.
+Priority: Determines which router becomes active. The default is 100. The router with the highest priority becomes the Active router.
+Preemption: If enabled, a router with a higher priority will automatically take over the Active role when it comes online, even if the current Active router is functioning.
+Hello Timers: Routers exchange hello messages to indicate they are alive. The default is 3 seconds for the hello timer and 10 seconds for the hold timer.
+
+Basic HSRP Configuration:
+interface GigabitEthernet0/0
+ ip address 192.168.1.2 255.255.255.0
+ standby 1 ip 192.168.1.1
+ standby 1 priority 110
+ standby 1 preempt
+
+This configuration on a router sets its physical IP to 192.168.1.2. It joins HSRP group 1 and defines the virtual gateway IP as 192.168.1.1. It sets its priority to 110 (higher than the default of 100) and enables preemption.
+
+Verification Commands:
+show standby: The primary command for verifying HSRP status. It shows the group, state (Active/Standby), virtual IP, hello timers, and priority.
+show standby brief: A summarized view of HSRP groups and their states.
+
+Assignment 8: Configuring HSRP for Default Gateway Redundancy
+
+Objective: To configure HSRP between two routers to provide a redundant default gateway for a LAN.
+1. In Packet Tracer, create a topology with two routers (R1, R2) and one switch (SW1). Connect both routers to the switch. Connect a PC to the switch.
+2. Configure the IP addresses on the router interfaces connected to the switch.
+   R1 G0/0: 192.168.1.2/24
+   R2 G0/0: 192.168.1.3/24
+3. On the PC, you will later set the default gateway to 192.168.1.1, which will be the HSRP virtual IP.
+4. Configure HSRP on both routers for group 1.
+   On R1:
+   R1(config)# interface g0/0
+   R1(config-if)# standby 1 ip 192.168.1.1
+   R1(config-if)# standby 1 priority 110
+   R1(config-if)# standby 1 preempt
+   On R2:
+   R2(config)# interface g0/0
+   R2(config-if)# standby 1 ip 192.168.1.1
+   (R2 will use the default priority of 100)
+5. Verify the configuration. On R1, run show standby. You should see that its state is Active. On R2, run the same command. You should see that its state is Standby.
+6. Now, configure the PC with the IP address 192.168.1.10/24 and the default gateway of 192.168.1.1.
+7. Test connectivity. The PC should be able to ping a remote network (or the loopback interface) on either R1 or R2. Use traceroute from the PC to see that the path goes through R1 (the Active router).
+8. Now, simulate a failure. On R1, shut down the G0/0 interface.
+   R1(config)# interface g0/0
+   R1(config-if)# shutdown
+9. Immediately go to R2 and run show standby. You should see that R2 has now transitioned to the Active state. This happened automatically.
+10. From the PC, run the traceroute command again. The path should now go through R2. The failover was seamless from the PC's perspective.
+11. Bring R1's interface back up (no shutdown). Because preempt is configured on R1, it will see that its priority (110) is higher than the current active router R2 (100), and it will send a coup message to take back the Active role.
+
+Glossary for Topic 8:
+FHRP: A protocol that provides default gateway redundancy.
+HSRP: Cisco's proprietary FHRP.
+Virtual IP: The shared gateway IP address used by hosts.
+Active Router: The router in an HSRP group that is currently forwarding traffic.
+Standby Router: The backup router in an HSRP group.
+Priority: The value used to determine which router becomes active.
+Preemption: The ability of a higher-priority router to take over the active role.
+
+Are you ready to proceed to the next topic?

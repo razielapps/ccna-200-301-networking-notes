@@ -1,0 +1,96 @@
+Topic 9: Dynamic Routing - OSPF, EIGRP
+
+Static routing works for small networks, but it becomes unmanageable in large environments. Dynamic routing protocols allow routers to automatically learn about remote networks from other routers. They dynamically adapt to network changes; if a link fails, the protocol finds an alternative path without any administrator intervention.
+
+All dynamic protocols have the same basic functions:
+1. Discover remote networks.
+2. Maintain up-to-date routing information.
+3. Calculate the best path to destinations.
+4. Converge: When all routers have a consistent view of the network and their routing tables are stable.
+
+The "best path" is determined by a metric. Each protocol uses a different metric calculation:
+- EIGRP uses a composite metric (bandwidth, delay, load, reliability).
+- OSPF uses cost, which is based on interface bandwidth.
+
+Let's focus on the two key protocols for the CCNA: OSPF and EIGRP.
+
+OSPF (Open Shortest Path First)
+OSPF is an open standard, link-state routing protocol. It is the most common interior gateway protocol.
+- Link-State: Each router builds a complete map of the network topology (Link-State Database - LSDB). It then runs the Shortest Path First (SPF or Dijkstra) algorithm to calculate the best loop-free paths.
+- Areas: OSPF uses a hierarchical design with Areas to limit the scope of routing updates and control SPF calculations. Area 0 is the backbone area, and all other areas must connect to it.
+- Router ID: A 32-bit number that uniquely identifies each router. It's chosen from a manually configured value or the highest loopback IP address, or the highest active physical interface IP.
+- OSPF uses multicast addresses 224.0.0.5 (All OSPF Routers) and 224.0.0.6 (All Designated Routers).
+
+Basic OSPF Configuration:
+To enable OSPF, you create an OSPF process and define the networks to advertise.
+`router ospf 1` (The '1' is a locally significant process ID)
+`network 192.168.1.0 0.0.0.255 area 0`
+The `network` command uses a wildcard mask, which is the inverse of a subnet mask. The area must be specified.
+
+EIGRP (Enhanced Interior Gateway Routing Protocol)
+EIGRP is a Cisco-proprietary, advanced distance-vector protocol. It is sometimes called a hybrid protocol.
+- Distance-Vector: Routers send routing updates to their neighbors, containing their entire routing table (or a portion), but EIGRP is more efficient.
+- Feasible Successor: EIGRP's key feature is its backup path calculation. It can maintain a backup path (Feasible Successor) in its topology table, allowing for extremely fast convergence if the primary path fails.
+- Autonomous System (AS): EIGRP routers that want to share routes must be in the same AS.
+- EIGRP uses multicast address 224.0.0.10.
+
+Basic EIGRP Configuration:
+`router eigrp 100` (The '100' is the Autonomous System number and must match on all participating routers)
+`network 192.168.1.0`
+EIGRP's `network` command can use a wildcard mask, but if none is specified, it defaults to the classful network boundary.
+
+Verification Commands (for both):
+`show ip route ospf/eigrp`: Shows routes learned via the protocol.
+`show ip protocols`: Displays parameters and current state of active routing protocols.
+`show ip ospf neighbor` / `show ip eigrp neighbors`: Shows the adjacency with neighboring routers.
+
+Assignment 9: Configuring OSPF and EIGRP
+
+Objective: To configure and verify basic OSPF and EIGRP operations in a multi-router topology.
+
+Part A: OSPF Configuration
+1. Build a topology with three routers in a triangle: R1, R2, R3. Connect them with serial or Ethernet links.
+2. Configure IP addresses on all interfaces. Use networks like 10.1.12.0/30 for R1-R2, 10.1.13.0/30 for R1-R3, and 10.1.23.0/30 for R2-R3. Also configure a loopback interface on each router (e.g., Lo0: 1.1.1.1/32 on R1, 2.2.2.2/32 on R2, 3.3.3.3/32 on R3).
+3. On R1:
+   `router ospf 1`
+   `network 10.1.12.0 0.0.0.3 area 0`
+   `network 10.1.13.0 0.0.0.3 area 0`
+   `network 1.1.1.1 0.0.0.0 area 0`
+4. On R2:
+   `router ospf 1`
+   `network 10.1.12.0 0.0.0.3 area 0`
+   `network 10.1.23.0 0.0.0.3 area 0`
+   `network 2.2.2.2 0.0.0.0 area 0`
+5. On R3:
+   `router ospf 1`
+   `network 10.1.13.0 0.0.0.3 area 0`
+   `network 10.1.23.0 0.0.0.3 area 0`
+   `network 3.3.3.3 0.0.0.0 area 0`
+6. Verify:
+   On each router, run `show ip route ospf`. You should see routes to the other routers' loopback interfaces and the remote network segments.
+   Run `show ip ospf neighbor`. You should see each router has two neighbors.
+   Ping from R1's loopback to R3's loopback (ping 3.3.3.3 source 1.1.1.1). It should work.
+
+Part B: EIGRP Configuration
+1. Use the same physical topology but change the IP addresses slightly for clarity (e.g., use 172.16.12.0/30, etc.).
+2. On R1:
+   `router eigrp 100`
+   `network 172.16.12.0 0.0.0.3`
+   `network 172.16.13.0 0.0.0.3`
+   `network 1.1.1.1 0.0.0.0` (or use `network 1.1.1.1` if your loopback is /32)
+   `eigrp router-id 1.1.1.1` (Manually set the Router ID)
+3. Repeat similar configuration on R2 and R3, ensuring the AS number is 100 on all.
+4. Verify:
+   Run `show ip route eigrp` to see EIGRP-learned routes.
+   Run `show ip eigrp neighbors` to see EIGRP neighbors.
+   Run `show ip eigrp topology`. This shows the EIGRP topology table, including successors and feasible successors.
+
+Glossary for Topic 9:
+Dynamic Routing Protocol: A protocol that automatically shares routing information between routers.
+Convergence: The state when all routers have consistent network topology information.
+Metric: A value used by a routing protocol to determine the best path to a network.
+OSPF: A link-state, open standard interior gateway protocol.
+EIGRP: A Cisco-proprietary advanced distance-vector protocol.
+Link-State Database: In OSPF, a map of the entire network topology.
+Feasible Successor: In EIGRP, a backup path that meets certain feasibility conditions.
+Wildcard Mask: A mask used to match a range of IP addresses, where 0 is a match and 1 is "don't care".

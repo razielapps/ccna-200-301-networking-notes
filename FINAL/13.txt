@@ -1,0 +1,80 @@
+Of course. Let's proceed.
+
+Topic 13: Port Security
+
+Port Security is a fundamental switch security feature that restricts the number of MAC addresses allowed on a switch port and can also specify exactly which MAC addresses are permitted. Its primary purpose is to prevent unauthorized devices from gaining access to the network. Think of it as a lock on a network jack that only allows specific, pre-approved devices to connect.
+
+Why use Port Security?
+- It prevents MAC Flooding Attacks: An attacker can flood a switch with frames containing random source MAC addresses, filling the MAC address table and causing the switch to enter "fail-open" mode, where it floods all traffic, allowing the attacker to see data not intended for them. Port Security limits the number of MAC addresses per port, preventing this type of attack.
+- It controls network access: You can ensure that only a specific printer, computer, or IP phone can use a particular network port.
+
+How Port Security Works:
+You enable Port Security on a per-interface basis, and it only works on access ports, not trunk ports. When Port Security is enabled, the switch learns the MAC addresses seen on that port and secures them. You can configure three main things:
+1. The maximum number of secure MAC addresses for the port.
+2. The specific MAC addresses that are allowed (sticky learning or static configuration).
+3. The action to take when a violation occurs (what happens when an unauthorized MAC address is seen or the maximum number is exceeded).
+
+Violation Modes:
+When a port security violation is detected, the switch can be configured to take one of three actions:
+- protect: The switch simply drops frames from unknown MAC addresses. No notification is sent. This is the least secure mode.
+- restrict: The switch drops frames from unknown MAC addresses and increments a violation counter. It also sends an SNMP trap and a syslog message to alert the administrator.
+- shutdown: This is the most common and secure action. The switch immediately shuts down the port, placing it into an err-disabled state. The port must be manually re-enabled by an administrator or automatically recovered after a configured time.
+
+A key feature is Sticky Learning. Instead of manually typing in the MAC addresses, you can configure the switch to dynamically learn the currently connected MAC address and "sticky" it, meaning it converts the learned MAC address into a secure MAC address and saves it to the running configuration. If you save the configuration, these addresses will remain after a reboot.
+
+Configuration Steps for Port Security:
+1. Change the port to an access mode (if not already).
+2. Enable port security on the interface.
+3. (Optional) Set the maximum number of MAC addresses.
+4. (Optional) Configure sticky learning or static MAC addresses.
+5. (Optional) Set the violation mode.
+
+Example Configuration:
+interface FastEthernet 0/1
+ switchport mode access
+ switchport port-security
+ switchport port-security maximum 1
+ switchport port-security mac-address sticky
+ switchport port-security violation shutdown
+
+This configuration allows only one MAC address on Fa0/1. It will learn the first device's MAC address and secure it. If any other device connects, the port will be shut down.
+
+Verification Commands:
+show port-security: Shows an overview of port security status, including violation counts.
+show port-security address: Displays the secure MAC addresses learned on each port.
+show port-security interface [interface]: Shows detailed port security information for a specific interface.
+
+Assignment 13: Configuring and Testing Port Security
+
+Objective: To configure Port Security to allow only a single specific device on a switch port and test the violation response.
+1. In Packet Tracer, use one switch and two PCs.
+2. Connect PC1 to switch port Fa0/1. Note the MAC address of PC1.
+3. Configure Port Security on interface Fa0/1.
+   SW1(config)# interface fastethernet 0/1
+   SW1(config-if)# switchport mode access
+   SW1(config-if)# switchport port-security
+   SW1(config-if)# switchport port-security maximum 1
+   SW1(config-if)# switchport port-security mac-address sticky
+   SW1(config-if)# switchport port-security violation shutdown
+4. The switch will immediately learn PC1's MAC address and add it as a sticky secure MAC. Verify this by running show port-security address. You should see PC1's MAC address associated with Fa0/1.
+5. Save the switch's configuration (copy running-config startup-config). This saves the sticky MAC address.
+6. Test that the authorized device works. Ping from PC1 to another device or its default gateway. It should work.
+7. Now, test the security. Disconnect PC1 from Fa0/1 and connect PC2 to the same port Fa0/1.
+8. The switch will detect a violation. PC2's MAC address is not the secured one. Because the violation mode is set to shutdown, the port will be immediately err-disabled.
+9. Verify the violation.
+   Run show port-security. You should see Fa0/1 in a Secure-shutdown state.
+   Run show port-security interface fa0/1. The status should show "Secure-shutdown".
+   Run show interfaces fa0/1 status. The port status should be "err-disabled".
+10. The port is now completely disabled. To recover it, you must manually shut down the interface and then re-enable it.
+    SW1(config)# interface fa0/1
+    SW1(config-if)# shutdown
+    SW1(config-if)# no shutdown
+11. After bringing the port back up, it will be secured again with the original MAC address. Reconnect PC1 to verify it works.
+
+Glossary for Topic 13:
+Port Security: A feature that limits and identifies allowed MAC addresses on a switch port.
+Violation: The event that occurs when an unauthorized MAC address is detected on a secured port.
+Sticky Learning: A method to dynamically learn and save secure MAC addresses.
+Err-disabled: A port state caused by a security violation that requires manual intervention.
+
+Are you ready to proceed to the next topic?

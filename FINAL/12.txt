@@ -1,0 +1,57 @@
+Of course. Let's proceed.
+
+Topic 12: Dynamic ARP Inspection (DAI)
+
+The Address Resolution Protocol (ARP) is a fundamental protocol that maps IP addresses to MAC addresses. However, ARP has no security. It is a trusting protocol that accepts any ARP reply it receives. This vulnerability allows for ARP spoofing or ARP poisoning attacks. In such an attack, a malicious actor sends fake ARP messages to associate their own MAC address with the IP address of a legitimate device on the network. This allows the attacker to intercept, modify, or stop data destined for that legitimate device.
+
+Dynamic ARP Inspection (DAI) is a security feature on switches that acts as a shield against ARP spoofing attacks. It validates ARP packets in the network. DAI determines the validity of an ARP packet by checking it against a trusted database. This trusted database is the DHCP Snooping Binding Table.
+
+How DAI Works:
+1. DAI relies on the DHCP Snooping Binding Table. This table contains valid mappings of IP addresses to MAC addresses for clients that obtained their IP via DHCP. For static IP addresses, you must configure static entries in the binding table.
+2. The switch intercepts all ARP requests and replies on untrusted ports.
+3. It checks the intercepted ARP packet against the DHCP Snooping Binding Table.
+   It verifies that the sender's IP and MAC address in the ARP packet match a valid entry in the binding table.
+4. If the ARP packet is valid, the switch forwards it.
+5. If the ARP packet is invalid (the IP-MAC mapping does not match the binding table), the switch drops the packet and can log the event.
+
+Just like DHCP Snooping, DAI uses the concept of trusted and untrusted ports.
+Trusted Ports: The switch does not inspect ARP packets received on trusted ports. These are typically ports connected to other switches, routers, or servers.
+Untrusted Ports: The switch subjects all ARP packets entering untrusted ports to DAI validation. These are typically ports connecting to end-users.
+
+Configuration Steps for DAI:
+Step 1: DHCP Snooping must be enabled and active. DAI depends on its binding table.
+Step 2: Enable DAI globally.
+Switch(config)# ip arp inspection vlan [vlan-id]
+Step 3: Configure trusted ports. By default, all ports are untrusted.
+Switch(config)# interface gigabitethernet 0/1
+Switch(config-if)# ip arp inspection trust
+
+Verification Commands:
+show ip arp inspection: Shows the DAI status, including enabled VLANs and statistics.
+show ip arp inspection statistics: Displays the number of forwarded and dropped ARP packets per interface.
+
+Assignment 12: Configuring Dynamic ARP Inspection
+
+Objective: To configure DAI to prevent an ARP poisoning attack.
+1. In Packet Tracer, use the same topology from the DHCP Snooping lab: one switch (SW1), a legitimate DHCP server, a PC acting as a legitimate client (PC-Legit), and a PC acting as an attacker (PC-Attacker).
+2. Ensure DHCP Snooping is still configured and working from the previous assignment. Verify with show ip dhcp snooping binding that PC-Legit has an entry.
+3. Initially, test normal connectivity. From PC-Legit, ping the default gateway (the router). Then, use the arp -a command on PC-Legit to see its correct ARP table entry for the gateway.
+4. Now, simulate an ARP poisoning attack. On the PC-Attacker, manually set its IP address to be in the same subnet as PC-Legit. Then, use a tool or command (in a real scenario) to send a gratuitous ARP reply, claiming that the gateway's IP address is now at the PC-Attacker's MAC address. In Packet Tracer, you can sometimes simulate this by setting a static ARP entry on PC-Legit or by using a simple packet generator to send an ARP reply from PC-Attacker.
+5. Without DAI, if successful, PC-Legit's ARP table would be poisoned, and its traffic to the gateway would be sent to the attacker instead.
+6. Now, configure DAI on the switch to stop this.
+   SW1(config)# ip arp inspection vlan 1
+   (Port Gi0/1 to the DHCP server should already be trusted for DHCP Snooping. You should also configure it as trusted for DAI.)
+   SW1(config)# interface gigabitethernet 0/1
+   SW1(config-if)# ip arp inspection trust
+   (The ports connecting to PC-Legit and PC-Attacker remain untrusted by default.)
+7. Now, try to perform the ARP poisoning attack again from PC-Attacker.
+8. The switch will intercept the malicious ARP reply from the untrusted port (PC-Attacker). It will check the packet's claimed IP-to-MAC mapping against the DHCP Snooping binding table. Since the binding table does not have an entry linking the gateway's IP to the attacker's MAC address, the switch will drop the malicious ARP packet.
+9. Verify that the attack was blocked. On PC-Legit, check the ARP table again (arp -a). It should still show the correct MAC address for the gateway. The ping to the gateway should still work.
+10. Check the DAI statistics on the switch with show ip arp inspection statistics. You should see that ARP packets were dropped on the port connected to PC-Attacker.
+
+Glossary for Topic 12:
+DAI: A security feature that validates ARP packets to prevent spoofing.
+ARP Spoofing: An attack where an attacker sends fake ARP messages to link their MAC address to a legitimate IP address.
+Binding Table: The trusted database (from DHCP Snooping) used by DAI for validation.
+
+Are you ready to proceed to the next topic, Port Security?

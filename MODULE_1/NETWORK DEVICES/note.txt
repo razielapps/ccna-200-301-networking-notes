@@ -1,0 +1,52 @@
+Now we know what a network is, its types and its topologies. But what are the actual physical devices that make it all work? Those would be the network devices. Each device has a particular role and intelligence level, and understanding them is basic to being a network engineer. Let's break them down from the simplest to the most complex.
+
+Network Interface Card (NIC)
+
+This is where every device connects to the network. The NIC is the physical interface between a computer and the network cable. Every NIC has a unique physical address burned into it called a MAC Address (Media Access Control). Think of the NIC as a specialized translator. It takes data from your computer and translates it into electrical signals or light pulses that can travel over the network medium. With no NIC, a device is an island, unable to communicate on the network.
+Hub
+
+Simplest and least intelligent central connecting device is called a hub. It operates at the physical layer. Its job is to simply repeat the same signal that it detects on one port out to every single other port. It does not look at the data, nor does it know any destination; it just repeats blindly.
+This creates a logical bus topology within a physical star. Because everyone sees everyone else's traffic, it leads to collisions. When two devices transmit at the same time, the signals corrupt each other. Hubs are half-duplex. Devices can either send or receive but not at the same time. Hubs are obsolete and have been completely replaced by switches. You need to know them for the exam to understand the evolution and why switches are better.
+
+Bridge
+A bridge is an intelligent step up from a hub. Its primary purpose is to segment a network to reduce collisions. It has several ports, usually two to sixteen. A bridge works at the Data-Link Layer meaning it can examine the MAC addresses within the frames.
+It works by building a MAC address table. It listens to the traffic on each port, and learns which MAC addresses are on which port. When a frame arrives, the bridge will look at the destination MAC address. If it knows what port that is, it will forward the frame only out of that specific port. If it does not know what port it is, it will flood the frame out of all ports except the one it came from. This is a major improvement over a hub because it reduces unnecessary traffic and effectively creates smaller collision domains. Bridges were a stepping stone to the modern switch.
+
+Switch
+A switch is a multiport bridge. It is the workhorse of the modern LAN. Like a bridge, the switch operates at the data link layer and uses MAC addresses to make forwarding decisions. However, the switch has many more ports, and is much faster, because its hardware is specialized for this task Application-Specific Integrated Circuits - ASICs
+How it works: The switch will create and maintain a table that maps the MAC addresses to particular ports. When a frame enters a switch, the device consults its table for the destination MAC address and sends that frame out only from that particular port. In other words, for the duration of that frame exchange, the two devices will have a point-to-point logical connection. For this reason, full-duplex communication, in which devices can send and receive simultaneously, is possible, and collisions are also completely eliminated. Each port of a switch forms its collision domain.
+
+By default, switches create a single broadcast domain. In other words, broadcast traffic (traffic sent to all devices) is still sent out every port. One of the key functions of a router is managing broadcast traffic.
+
+Router
+
+This is the device used to connect different networks together. While a switch connects devices within a single network, a router connects different networks. It is the gateway between your LAN and the WAN-wide area network such as the Internet. Routers operate at the network layer, which means they make decisions based on logical addresses, specifically IP addresses.
+
+How it works: A router has what is called a routing table, like a map of the internetwork. This table lists known networks and their paths to reach them. When a packet arrives at a router, the router examines the destination IP address. It then looks in its routing table to determine which path to take to that network and sends the packet out the appropriate interface. If it doesn't have a route, it discards the packet.
+
+Routers are very important since they do not forward broadcasts by default. This is their most important characteristic for network design. Each interface on a router creates a separate broadcast domain. You can use routers to segment a large network into smaller, more manageable sub-networks, controlling broadcast traffic and improving security and performance.
+
+Wireless Access Point (AP)
+
+An AP acts as a bridge between the wired and wireless networks. It connects to your wired network via a switch and then provides a wireless signal-a WLAN-for devices to connect to. An AP takes data from the wired network, converts it to radio waves, and sends it. It also performs the opposite, taking radio waves from wireless devices and converting it back into data for the wired network. An AP functions at the data link layer, using MAC addresses just like a switch. To the wired network, the AP appears like a switch port with many devices attached to it.
+
+Modem
+This is a device that connects your local network to your Internet Service Provider via a specific type of service, such as cable or DSL. The term modem is a portmanteau for modulator-demodulator. Its job is to convert digital data from your computer into an analog signal that can travel over traditional telephone lines or cable lines. On the other end, another modem converts the analog signal back to digital. In many homes, the modem is combined with the wireless router, but functionally, the modem is the part that talks to the ISP.
+Firewall
+
+A firewall is a network security device that controls the incoming and outgoing network traffic by analyzing it against the predetermined set of security rules. It basically forms a barrier between a trusted, secured internal network and an untrusted outside network, like the Internet. Firewalls can also be hardware appliances or software. They operate by analyzing packets and enabling or blocking them based on rules, which could consist of source/destination IP addresses, ports, and protocols. While simple routers can do some access control, a dedicated firewall is much more powerful and sophisticated to protect a network.
+
+Key Concepts for the CCNA: Collision and Broadcast Domains
+Understanding these two concepts is non-negotiable for both the CCNA exam and real-world networking.
+Collision Domain: A network segment where packets of data could possibly collide with each other; it's an area where contention could occur. In a hub-based network, the entire network is one large collision domain. Every port on a switch is its own separate collision domain. Routers also break up collision domains.
+Broadcast Domain: The segment of a network in which a broadcast frame can reach all devices. A broadcast is a message sent to every device on the network. Hubs and switches forward broadcasts out of all ports, so by default, a network connected only by hubs and switches is one large broadcast domain. A router does not forward broadcasts. Therefore, every interface on a router defines the boundary of a broadcast domain.
+Device Summary:
+Hub: One collision domain, one broadcast domain.
+Switch: Multiple collision domains (one per port), one broadcast domain.
+Router: multiple collision domains, multiple broadcast domains - one per interface.
+Glossary for Topic 4
+NIC: Network Interface Card-This is the hardware that enables the device to connect to the network. It provides every device with a unique MAC address.
+Hub - dumb network device that repeats the signal to all other ports, creating one collision domain.
+Bridge: A device that connects network segments and filters traffic based on MAC addresses, decreasing the number of collision domains.
+Switch: A smart multiport bridge that can forward frames by their MAC addresses, so each port constitutes a different collision domain.
+Router: A device interconnecting different networks, routing packets based on IP addresses and therefore segregating broadcast domains. Wireless Access Point (AP): A device that enables wireless devices to connect to a wired network. Modem: This is a device that modulates and demodulates signals for connecting a network to an ISP over specific media, either cable or DSL. Firewall: A security device that filters network traffic based on a set of security rules. MAC Address: The unique physical address of a NIC, used to communicate on a local network segment. IP Address: This is a logical address that is assigned to a device for communication over different networks. Collision Domain: The area of a network where collisions may occur. Broadcast Domain: The area of a network where a broadcast is forwarded. Full Duplex: Communication where a device transmits and receives data simultaneously. Half-Duplex: Communication where at any one time a device can either send or receive information, but not both.

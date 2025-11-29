@@ -1,0 +1,89 @@
+We are now familiar with the devices that make up the network, but how do these devices communicate with one another in such an organized manner? The answer is through models. In other words, these models provide the rulebooks and universal translators for networking. These models break down this complex process of communication into smaller, more manageable layers. For the CCNA, you must have a deep understanding of two key models: the theoretical OSI Model and the practical TCP/IP Model.
+Let's delve into the grand framework-the OSI Model.
+
+OSI is a conceptual model. Developed by ISO, this is a standard for how applications on networks should communicate. It consists of 7 layers. Think of it as the ideal, theoretical blueprint for constructing a system of communication. While no real-world protocol follows it exactly, it is the essential tool for learning, troubleshooting, and discussing networking concepts. The key to understanding it is the concept of encapsulation.
+
+Encapsulation refers to the addition of headers-and sometimes trailers-to data as it moves down the OSI model layers at the source. De-encapsulation is the reverse process, where the headers are removed as the data moves up the layers at the destination. It's like sending something valuable in the mail. You put the item in a box, put a packing slip on that box, put that box into a shipping box with an address label on it, and so forth until it arrives at its destination and the receiver unpacks each layer until they get to the original item.
+
+The OSI Model - The 7-Layer Blueprint
+
+Layer 7: Application Layer
+
+This is the layer with which the user interacts. This layer provides the interface through which applications access network services. It's not the application itself, like Chrome or Outlook, but the services that those applications use, such as HTTP for web browsing, SMTP for email, or DNS for translating domain names to IP addresses.
+Data Unit: Data
+Analogy: the content of your letter, the actual message you want to send. The Application layer is the thought or idea in your head that you want to communicate.
+
+Layer 6: Presentation Layer
+This layer serves as the translator. It determines how data is represented, translating data from application format to a common, standard representation for transmission across the network and vice-versa in the receiving end. This includes encryption (for security), decryption, and compression.
+Data Unit: Data
+
+Analogous to: Translating your letter into a language the recipient can understand, or writing it in a secret code. It makes sure that the data is in a usable format.
+Layer 5: Session Layer
+This layer is the manager of the conversation. It establishes, manages, and terminates sessions -the connections- between applications. It controls the dialogue, determining who can transmit, when, and for how long. It can also set up checkpoints for resuming interrupted conversations.
+
+Data Unit: Data
+Analogy: It's like picking up the phone, having the conversation, and then hanging up. It handles the entire connection from start to finish.
+Layer 4: Transport Layer
+This layer is critical to end-to-end connectivity. It offers logical communication between applications of different hosts. Its main tasks are:
+Segmentation: This involves breaking the data from the upper layers into smaller chunks called Segments in TCP and Datagrams in UDP.
+Flow Control: This prevents the sender from sending data too fast for the receiver to handle.
+Error Recovery: Through TCP, it provides reliable delivery through acknowledgement of the received data and retransmission of the lost segments.
+
+The main protocols used here are TCP (Transmission Control Protocol) and UDP (User Datagram Protocol).
+Data Unit: Segment (TCP) or Datagram (UDP)
+Analogy: The Transport layer breaks your long letter into several postcards, numbers them, and decides whether to use a reliable registered mail service called TCP, or a faster, but less reliable standard mail called UDP.
+Layer 3: Network Layer
+Logical addressing and path selection are what this layer is all about. Its main functions include:
+
+Logical Addressing: It utilizes IP addresses, such as 192.168.1.1, to uniquely identify devices on different networks.
+Routing: Routers functioning at this layer examine the destination IP address in a packet to decide the best path to forward the packets through the network.
+Data Unit: Packet
+Analogy: The Network layer puts the postcard into an envelope and writes the source and destination postal addresses (IP addresses) on it. The routers act as the sorting offices that read these addresses and decide the best route for the envelope.
+Layer 2: Data Link Layer
+This layer is responsible for node-to-node delivery on the same network segment. It handles the physical addressing and prepares the data for transmission over the physical medium. It is divided into two sub-layers:
+
+LLC (Logical Link Control): interacts with the Network layer above.
+Media Access Control (MAC): This handles the physical addressing and the access to the media. The MAC address lives here.
+Switches and bridges operate at this layer. The Data Link layer also adds a trailer for error detection called the Frame Check Sequence.
+
+Data Unit: Frame
+
+Analogy: The Data Link layer puts the envelope into a mailbox truck. It writes the local, physical truck stop address - MAC address - on a shipping manifest. The switch is the dispatcher that directs the truck to the correct local neighborhood.
+
+Layer 1: Physical Layer
+
+This is the physical medium itself. It defines the electrical, mechanical, procedural, and functional specifications for activating, maintaining, and deactivating the physical link between devices. It includes things such as voltages, cable specifications, hubs, repeaters, and physical connectors.
+
+Data Unit: Bits (1s and 0s)
+
+Analogy: The Physical layer is the actual truck, the road, and the gasoline. It is the physical movement of the truck-the bits as electrical/light signals-from one location to another.
+
+The TCP/IP Model - The Real-World Implementation
+
+Also known as the Internet Protocol Suite, this is the model that the modern internet actually runs on. It is more practical and has only 4 layers. It is vital to know how it maps to the OSI model.
+Layer 4: Application Layer (Maps to OSI Layers 5, 6, 7)
+
+This single layer in the TCP/IP model incorporates the functions of the top three OSI layers. Protocols like HTTP, FTP, DNS, and SMTP all function here.
+Layer 3: Transport Layer (Maps directly to OSI Layer 4)
+This layer performs exactly like the OSI Transport Layer. It uses TCP and UDP for end-to-end communication.
+Layer 2: Internet Layer (Maps to OSI Layer 3)
+This layer corresponds to the OSI Network Layer. Its main protocol is IP (Internet Protocol). It handles logical addressing (IP addresses) and routing.
+
+Layer 1: Network Access Layer (Maps to OSI Layers 1 and 2)
+
+This layer combines the functions of the Physical and Data Link layers. It deals with the hardware, physical addressing (MAC addresses), and protocols for accessing the physical network medium such as Ethernet or Wi-Fi.
+Why These Models Are Essential for the CCNA
+Troubleshooting The models enable you to systematically localize problems. If a user cannot reach a website, you can check the Physical layer, such as to see if the cable is plugged in, if they have an IP address at the Network layer, if they can ping the gateway, and if DNS is working at the Application layer.
+Communication: They provide a common language for network professionals. You can say, "it's a Layer 3 issue," and immediately everyone knows you are talking about IP addressing or routing.
+Understanding Technology: Without these models, you won't understand how the router (Layer 3) differs from the switch (Layer 2). You can't understand why a firewall can filter based on both port (Layer 4) and IP address (Layer 3).
+The Data Unit Names by Layer:
+Application/Presentation/Session: Data
+Transport: Segment (TCP) / Datagram (UDP)
+Network: Packet
+Data Link: Frame
+Physical: Bits
+Glossary for Topic OSI and TPC/IP Models
+OSI Model: A 7-layer conceptual model used as a standard for understanding network communication.
+TCP/IP Model: A 4-layer practical model on which the modern-day internet is built.
+
+Encapsulation is a process where headers are added to the data as it moves down the OSI/TCP/IP layers. De-encapsulation: The process by which headers are removed as data moves up the OSI/TCP/IP layers. Protocol: The rules that control communication at any given layer. PDU (Protocol Data Unit): Special name given to the data at each layer. Application Layer (Layer 7): This is where network applications interact with the user. Presentation Layer (Layer 6): translates, encrypts, and compresses data. Session Layer (Layer 5): Establishes, manages, and terminates sessions between applications. Layer 4 - Transport Layer: Provides end-to-end communication, segmentation, and reliability with TCP and UDP. Network Layer (Layer 3): Provides logical addressing, such as IP and routing. Data Link Layer (Layer 2): Provides node-to-node delivery, physical addressing (MAC), and framing. Physical Layer-Layer 1: Specifies the physical medium to be used and transmits raw bits. TCP: Transmission Control Protocol is a connection-oriented and reliable Transport layer protocol. UDP (User Datagram Protocol) : a connectionless, faster but not reliable Transport layer protocol.

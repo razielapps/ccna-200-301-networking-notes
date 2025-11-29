@@ -1,0 +1,67 @@
+Topic 6: Layer 3 Switch
+
+We have seen that VLANs segment a network into separate broadcast domains. This also means that hosts in different VLANs cannot communicate with each other because they are on different IP subnets and Layer 2 broadcasting cannot cross the VLAN boundary. To allow communication between VLANs, you need a device that can route IP packets. This is the role of a Layer 3 Switch.
+
+A Layer 3 Switch is essentially a switch that also has a router built into it. It can do everything a normal Layer 2 switch does, but it can also perform IP routing. The key advantage of a Layer 3 switch over a standalone router is speed. Routing between VLANs happens at hardware switching speeds inside the ASICs of the switch, which is much faster than sending traffic to an external router.
+
+The core mechanism that enables inter-VLAN routing on a Layer 3 switch is the Switch Virtual Interface (SVI). An SVI is a virtual interface that represents a VLAN on the switch. You cannot touch an SVI; it is a logical interface. For each VLAN that you want to route for, you must create an SVI and assign it an IP address. This IP address will serve as the default gateway for all hosts in that VLAN.
+
+For example:
+- VLAN 10: Hosts have IPs in the 192.168.10.0/24 network. The SVI for VLAN 10 will be configured with IP 192.168.10.1.
+- VLAN 20: Hosts have IPs in the 192.168.20.0/24 network. The SVI for VLAN 20 will be configured with IP 192.168.20.1.
+
+When a host in VLAN 10 (e.g., 192.168.10.5) wants to send a packet to a host in VLAN 20 (192.168.20.5), it sends the packet to its default gateway (192.168.10.1). The Layer 3 switch receives the packet on the VLAN 10 SVI, performs a routing table lookup, and then forwards the packet out the VLAN 20 SVI to the destination host.
+
+Configuration Steps for Inter-VLAN Routing on a Layer 3 Switch:
+1. Create the VLANs (if they don't already exist).
+   L3_SW(config)# vlan 10
+   L3_SW(config-vlan)# name SALES
+   L3_SW(config)# vlan 20
+   L3_SW(config-vlan)# name ENGINEERING
+2. Create the SVIs and assign IP addresses (the default gateways for each VLAN).
+   L3_SW(config)# interface vlan 10
+   L3_SW(config-if)# ip address 192.168.10.1 255.255.255.0
+   L3_SW(config-if)# no shutdown
+   L3_SW(config)# interface vlan 20
+   L3_SW(config-if)# ip address 192.168.20.1 255.255.255.0
+   L3_SW(config-if)# no shutdown
+3. Ensure that the physical switch ports are assigned to the correct VLANs as access ports, just as you would on a Layer 2 switch.
+
+Verification Commands:
+show ip route: This displays the switch's routing table. You should see directly connected networks for the VLANs you configured.
+show interfaces vlan [vlan-id]: Shows the status and IP configuration of the SVI.
+show vlan brief: Confirms VLANs exist and ports are assigned.
+
+Assignment 6: Configuring Inter-VLAN Routing with a Layer 3 Switch
+
+Objective: To enable communication between two VLANs using a single Layer 3 switch.
+1. In Packet Tracer, use a 3560 switch (which is a Layer 3 switch) or enable routing on a 2960 model if possible. Otherwise, use a 3650 or similar.
+2. Create the same topology as in the previous VLAN assignment: Connect four PCs to the switch.
+   PC1 (Fa0/1): 192.168.10.10/24
+   PC2 (Fa0/2): 192.168.10.11/24
+   PC3 (Fa0/3): 192.168.20.10/24
+   PC4 (Fa0/4): 192.168.20.11/24
+3. On the Layer 3 switch, create VLANs 10 and 20 and name them.
+4. Assign the switch ports Fa0/1 and Fa0/2 to VLAN 10 as access ports.
+   Assign the switch ports Fa0/3 and Fa0/4 to VLAN 20 as access ports.
+5. Now, configure the SVIs.
+   Create interface Vlan10 and assign IP address 192.168.10.1 255.255.255.0. Issue the `no shutdown` command.
+   Create interface Vlan20 and assign IP address 192.168.20.1 255.255.255.0. Issue the `no shutdown` command.
+6. On the PCs, set their default gateway to the SVI IP address for their VLAN.
+   PC1 and PC2 default gateway: 192.168.10.1
+   PC3 and PC4 default gateway: 192.168.20.1
+7. Now, test connectivity.
+   PC1 should be able to ping PC2.
+   PC3 should be able to ping PC4.
+   The key test: PC1 should now be able to ping PC3 and PC4. The Layer 3 switch is routing the packets between the VLANs.
+8. On the Layer 3 switch, go to privileged EXEC mode and run the command `show ip route`. You will see two entries in the routing table:
+   C 192.168.10.0/24 is directly connected, Vlan10
+   C 192.168.20.0/24 is directly connected, Vlan20
+   The 'C' stands for connected, meaning the switch has an interface directly connected to these networks.
+
+Glossary for Topic 6:
+Layer 3 Switch: A network device that performs both Layer 2 switching and Layer 3 routing.
+Inter-VLAN Routing: The process of forwarding network traffic from one VLAN to another.
+SVI (Switch Virtual Interface): A virtual Layer 3 interface on a switch associated with a single VLAN.
+
+Are you ready to proceed to the next topic, Routing?

@@ -1,0 +1,111 @@
+Of course. Here are three comprehensive final projects designed to test your understanding of all the CCNA topics we've covered. Each project simulates a real-world scenario you would encounter as a network engineer.
+
+---
+
+### **Final Project 1: Enterprise Network Build-Out**
+
+**Scenario:** You are hired to build the network for a new company, "TechCorp," with a main office and one branch office.
+
+**Topology Requirements:**
+*   **Main Office (HQ):**
+    *   1 Router (R1) acting as the internet gateway.
+    *   2 Layer 3 Switches (Core-SW1, Core-SW2) for redundancy.
+    *   2 Layer 2 Switches (Access-SW1, Access-SW2) for user connectivity.
+    *   A server hosting internal services (IP: 10.10.10.100/24).
+*   **Branch Office (BR):**
+    *   1 Router (R2) connecting back to HQ.
+    *   1 Layer 2 Switch (BR-SW1) for users.
+*   **Connectivity:** A simulated WAN link (Serial or GRE Tunnel) between R1 and R2.
+
+**Your Tasks:**
+
+1.  **Initial Device Setup:** On all routers and switches, perform the initial configuration (hostname, enable secret, console & VTY lines with SSH-only access, and banners).
+2.  **Inter-VLAN Routing & Redundancy (HQ):**
+    *   On Core-SW1 and Core-SW2, create VLANs 10 (Finance), 20 (Engineering), and 99 (Management).
+    *   Configure SVIs for these VLANs. Use HSRP so that Core-SW1 is the active gateway for VLAN 10 and VLAN 99, and Core-SW2 is the active gateway for VLAN 20.
+    *   Configure an EtherChannel (LACP active) between the two core switches.
+3.  **Switch Port Configuration:**
+    *   Assign access ports on Access-SW1 to VLAN 10 and on Access-SW2 to VLAN 20.
+    *   Configure all links between switches as trunks.
+    *   On all access switches, enable Port Security to allow a maximum of 2 MAC addresses per port, violating ports should be shut down.
+4.  **Dynamic Routing:**
+    *   Configure OSPF (area 0) between R1, Core-SW1, Core-SW2, and R2. Ensure all networks (including the VLANs and the WAN link) are advertised.
+5.  **WAN & Security:**
+    *   Configure the link between R1 and R2 using PPP with CHAP authentication.
+    *   On the HQ router (R1), configure a default route to the internet (simulate this with a loopback interface on R1).
+    *   On R1, configure a NAT rule (PAT) to allow the 10.0.0.0/8 network to reach the internet.
+    *   On R1, create an inbound ACL on the internet-facing interface to only allow established HTTP (80), HTTPS (443), and DNS (53) traffic into the internal network.
+6.  **Verification and Testing:**
+    *   Verify HSRP roles with `show standby brief`.
+    *   Verify the OSPF neighbor adjacency and routing table with `show ip ospf neighbor` and `show ip route ospf`.
+    *   Test that a PC in VLAN 10 can ping a PC in VLAN 20 and the branch office.
+    *   Test that the EtherChannel is formed with `show etherchannel summary`.
+
+---
+
+### **Final Project 2: Network Security Hardening & Troubleshooting**
+
+**Scenario:** You have inherited a poorly configured network from a previous administrator. Your job is to secure it and fix existing problems.
+
+**Initial "Broken" State (What you start with):**
+*   All devices use Telnet for management with a weak password.
+*   No VLANs – all users are in a single broadcast domain.
+*   A rogue wireless router is connected to the network, handing out incorrect IP addresses.
+*   A user has connected a hub to a switch port and is causing a network loop.
+*   There is no control over which devices can connect to the network.
+
+**Your Tasks:**
+
+1.  **Secure Management Access:**
+    *   Replace Telnet with SSH on all devices. Create local usernames and require SSH for VTY line access.
+2.  **Segment the Network:**
+    *   Create and implement a VLAN plan: VLAN 100 (Employees), VLAN 200 (Guests), Native VLAN 999.
+    *   Assign switch access ports to the correct VLANs.
+    *   Configure trunk ports between switches, and ensure the native VLAN is changed to an unused one (999) for security.
+3.  **Mitigate Layer 2 Attacks:**
+    *   **DHCP Snooping:** Enable DHCP Snooping globally and on the user VLANs. Configure the uplink ports to your legitimate DHCP server as trusted.
+    *   **Dynamic ARP Inspection:** Enable DAI on the user VLANs to use the DHCP Snooping binding table.
+    *   **Port Security:** Enable sticky port security on all user-facing access ports.
+4.  **Implement Access Control:**
+    *   On the core router, create an extended ACL named "GUEST-POLICY" to prevent Guest VLAN (200) users from accessing the Employee VLAN (100), but allow them internet access (DNS, HTTP, HTTPS).
+    *   Apply this ACL to the SVI of the Guest VLAN.
+5.  **Troubleshoot and Stabilize:**
+    *   Identify the port with the connected hub and network loop. Use `show spanning-tree` to find the blocked port.
+    *   Locate the rogue DHCP server by examining DHCP Snooping logs and disconnect it.
+    *   Verify that STP is running and has logically blocked the looped port.
+6.  **Verification:**
+    *   Use `show ip dhcp snooping binding` to verify the correct IP-MAC mappings.
+    *   Use `show access-lists` to see hits on the GUEST-POLICY ACL.
+    *   Confirm that a device in the Guest VLAN cannot ping a device in the Employee VLAN but can browse the internet (simulated).
+
+---
+
+### **Final Project 3: Advanced Services & Automation**
+
+**Scenario:** TechCorp is expanding and needs to implement advanced services and automate its network operations.
+
+**Advanced Requirements:**
+
+1.  **First-Hop Redundancy:**
+    *   Configure GLBP between two routers (or router interfaces) that serve as the default gateway for a user VLAN. Ensure both routers are actively load-sharing the traffic.
+2.  **Quality of Service (QoS):**
+    *   A new VoIP system is being deployed. Configure a QoS policy on your switches and routers to prioritize VoIP traffic (DSCP EF).
+    *   On the switch connected to the IP phones, trust the DSCP markings from the phones.
+    *   On the WAN router, create a Low-Latency Queuing (LLQ) policy to ensure VoIP traffic is always serviced first on the slow serial link.
+3.  **Wireless LAN Integration:**
+    *   Deploy a Wireless LAN Controller (WLC) and a Lightweight AP (if possible in your simulator).
+    *   Create two WLANs: "TechCorp-Employee" (WPA2-Enterprise with a local user database) and "TechCorp-Guest" (with a pre-shared key).
+    *   Ensure the Employee WLAN bridges users to the Employee VLAN and the Guest WLAN bridges to the Guest VLAN.
+4.  **Network Automation:**
+    *   **Part A (Backup):** Write a Python script using the `netmiko` library that connects to all your switches and routers, executes the `show running-config` command, and saves the output to a unique file for each device. This is your automated configuration backup.
+    *   **Part B (Configuration Push):** Create an Ansible playbook (conceptual YAML file) that pushes a standardized configuration snippet (e.g., configuring the same NTP server and syslog server) to a group of devices listed in an inventory file.
+5.  **Verification and Showcase:**
+    *   Use `show glbp` to verify both routers are in active state and load-balancing.
+    *   Generate traffic and use `show policy-map interface` on the WAN router to see VoIP traffic being prioritized in the LLQ.
+    *   Successfully connect a wireless client to both the Employee and Guest SSIDs and verify they are placed in the correct VLANs and have the appropriate level of access.
+    *   Execute your Python script and show the generated backup files.
+    *   Present your Ansible playbook YAML file as the solution for standardized configuration deployment.
+
+---
+
+These three projects will force you to integrate almost every single topic from the CCNA curriculum. Good luck! You are now ready to tackle them.

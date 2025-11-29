@@ -1,0 +1,68 @@
+Of course. Let's proceed.
+
+Topic 4: RIPv1 / RIPv2
+
+Routing Information Protocol (RIP) is one of the oldest distance-vector routing protocols. It is simple to configure but has significant limitations, which is why it is mostly used for learning concepts. Its key characteristic is that it uses hop count as its metric. A hop count is the number of routers a packet must pass through to reach a network. The maximum hop count allowed in RIP is 15, making it unsuitable for large networks.
+
+RIPv1 vs RIPv2:
+RIPv1 is a classful routing protocol. This is its biggest limitation. It does not send subnet mask information in its updates. Therefore, it cannot support Variable Length Subnet Masks (VLSM) or Classless Inter-Domain Routing (CIDR). When a RIPv1 router sends an update about a network, it assumes the default classful subnet mask based on the IP address. If you have subnetted a Class A, B, or C network, RIPv1 will not advertise the subnets correctly beyond the classful boundary.
+
+RIPv2 is a classless routing protocol. It is a significant improvement because it includes the subnet mask in its routing updates. This allows it to fully support VLSM and CIDR, making modern network design possible. Additionally, RIPv2 supports authentication to secure routing updates, and it sends its updates to the multicast address 224.0.0.9, which is more efficient than RIPv1's broadcast updates.
+
+How RIP Works:
+RIP uses timers to manage its operation.
+Update Timer: How often routing updates are sent (default 30 seconds).
+Invalid Timer: If a route is not heard from in 180 seconds, it is marked as invalid.
+Holddown Timer: Once a route is invalid, RIP waits 180 seconds before accepting any new information about that route, preventing loops from incorrect information.
+Flush Timer: The route is completely removed from the routing table after 240 seconds.
+
+RIP routers send their entire routing table to their neighbors every 30 seconds. When a router receives an update, it adds the learned networks to its table, incrementing the hop count by 1. If it learns multiple paths to the same network, it installs the path with the lowest hop count in the routing table.
+
+Basic RIPv2 Configuration:
+1. Enable the RIP routing process.
+2. Specify the RIP version (2 is critical).
+3. Advertise networks by using the network command with the classful network address. RIP will advertise any interface that falls within that network.
+
+Example Configuration:
+Router R1 has interfaces in 10.1.1.0/24 and 192.168.1.0/24.
+R1(config)# router rip
+R1(config-router)# version 2
+R1(config-router)# no auto-summary (This command disables automatic summarization at classful boundaries, which is essential for VLSM networks)
+R1(config-router)# network 10.0.0.0
+R1(config-router)# network 192.168.1.0
+
+Verification Commands:
+show ip route rip: Displays only the routes learned by RIP.
+show ip protocols: Shows the parameters and current state of the active routing protocol, including timers and networks being advertised.
+debug ip rip: A powerful troubleshooting tool that shows RIP updates being sent and received in real-time.
+
+Assignment 4: Configuring and Comparing RIPv1 and RIPv2
+
+Objective: To configure RIPv2 and observe the limitations of RIPv1 in a VLSM environment.
+1. In Packet Tracer, create a topology with two routers, R1 and R2, connected by a serial link.
+2. Use VLSM. Configure the links with non-classful subnets.
+   R1: G0/0: 192.168.10.1 255.255.255.128 (Network 192.168.10.0/25)
+   R2: G0/0: 192.168.10.129 255.255.255.128 (Network 192.168.10.128/25)
+   R1-R2 Serial Link: Use 172.16.1.0/30
+3. First, configure RIPv1.
+   On R1: router rip, network 192.168.10.0, network 172.16.0.0
+   On R2: router rip, network 192.168.10.0, network 172.16.0.0
+4. Check the routing tables on both routers with show ip route. You will see a problem. Because RIPv1 is classful, it summarizes the 192.168.10.0 network to its classful boundary, which is /24. Both routers will believe they are directly connected to the entire 192.168.10.0/24 network and will not install a RIP route. This breaks connectivity.
+5. Now, configure RIPv2. On both routers:
+   R1(config)# router rip
+   R1(config-router)# version 2
+   R1(config-router)# no auto-summary
+   R1(config-router)# network 192.168.10.0
+   R1(config-router)# network 172.16.0.0
+   (Repeat on R2)
+6. Check the routing tables again with show ip route rip. You should now see specific routes. For example, R1 will have a route for 192.168.10.128/25 via R2, and R2 will have a route for 192.168.10.0/25 via R1. This demonstrates RIPv2's support for VLSM.
+7. Test connectivity by pinging from a PC on R1's LAN to a PC on R2's LAN.
+
+Glossary for Topic 4:
+RIP: A distance-vector routing protocol that uses hop count as a metric.
+Classful Protocol: A protocol that does not send subnet masks in its updates (RIPv1).
+Classless Protocol: A protocol that includes subnet masks in its updates (RIPv2).
+Hop Count: The number of routers between a source and destination network.
+VLSM: The ability to use different subnet masks within the same network address.
+
+Are you ready to proceed to the next topic?

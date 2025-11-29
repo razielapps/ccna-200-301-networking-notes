@@ -1,0 +1,15 @@
+NETWORK FUNDAMENTAL 24-11-2025
+
+TOPICS COVERED
+
+-Introduction to Networking
+-Types of Networks
+-Network Topologies
+-Network Devices
+-OSI and TCP/IP Models
+-IP Addressing
+-Protocol and Ports
+-Lab setup
+
+
+

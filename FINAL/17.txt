@@ -1,0 +1,61 @@
+Of course. Let's proceed.
+
+Topic 17: Access Point Modes
+
+An Access Point can operate in different modes to serve various roles in a network. The mode determines how the AP interacts with clients and other APs. Understanding these modes is crucial for designing and troubleshooting wireless networks.
+
+1. Root Mode (Default Mode):
+This is the standard operating mode for an AP in an infrastructure BSS. In root mode, the AP acts as the central connection point for wireless clients and provides a bridge to the wired network (the "root" of the system). All communication between wireless clients, and between wireless clients and the wired network, goes through the AP. This is the mode used by nearly all APs in home and enterprise networks.
+
+2. Repeater Mode:
+A repeater extends the wireless coverage of an existing network by relaying signals. It does not connect to the wired network. Instead, it associates with a root AP as a client and then re-broadcasts the same SSID to extend the range. The main disadvantage is that it effectively halves the available bandwidth for clients connected to it because it must use the same radio to communicate both with the root AP and its own clients. It should be used sparingly.
+
+3. Bridge Mode:
+Wireless bridges are used to connect two or more separate wired networks together over a wireless link. There are two common bridge modes:
+- Point-to-Point (PtP) Bridge: A wireless link between two APs in bridge mode, connecting two networks. For example, connecting two buildings.
+- Point-to-Multipoint (PtMP) Bridge: One central AP in bridge mode communicates with multiple other APs in bridge mode, connecting multiple remote networks to a central one.
+
+4. Workgroup Bridge (WGB) Mode:
+A WGB is a special mode where an AP acts as a wireless client on behalf of a group of wired devices. The WGB associates to a root AP, and then the devices connected to the WGB's Ethernet port can access the network through that wireless uplink. This is useful for connecting a device that doesn't have a wireless card, like a printer or a desktop, to a wireless network.
+
+5. Scanner Mode (Monitor Mode):
+In this mode, the AP does not accept client associations. Instead, it dedicates its radio to scanning the RF environment. It is used for wireless intrusion detection/prevention systems (WIDS/WIPS) and for generating reports on network health, interference, and rogue APs.
+
+The most critical concept for modern enterprise networks is the split-MAC architecture, which is inherent in the operation of lightweight APs with a WLAN controller. In this model, the MAC layer functions are split between the AP and the controller.
+The AP (the "lightweight" part) handles real-time, time-sensitive functions:
+- Frame transmission and reception
+- Frame encryption and decryption (for privacy)
+- Beacon frame transmission
+- RF monitoring
+The WLAN Controller handles the complex, management-intensive functions:
+- Client authentication and association
+- Roaming management
+- RF management (channel and power assignment)
+- Security policy enforcement
+
+This split allows for centralized control and intelligence while distributing the real-time wireless workload.
+
+Assignment 17: Configuring an AP as a Wireless Client and a Workgroup Bridge
+
+Objective: To use an AP as a wireless client to connect a wired device to a wireless network.
+1. In Packet Tracer, create a topology with a wireless router (acting as a root AP) and two devices: a laptop with a wireless card and a desktop computer without a wireless card. Also, use a second wireless router or an AP that can be reconfigured.
+2. Configure the first wireless router as the root AP.
+   - Set the SSID to "MainNetwork".
+   - Set security to WPA2-Personal with a PSK.
+3. Connect the wireless laptop to "MainNetwork" to verify it works.
+4. Now, take the second wireless router/AP. This device will be configured as a Workgroup Bridge (WGB) to connect the wired desktop to the "MainNetwork".
+5. Access the configuration of the second AP. Find the operating mode setting (often under "Wireless" > "Advanced Settings").
+6. Change the mode from "Access Point" (Root Mode) to "Client" or "Workgroup Bridge" mode.
+7. Once in client mode, the AP will now present a list of available wireless networks. Select "MainNetwork" and enter the PSK.
+8. The AP is now associated with the root AP as a client. Connect the desktop computer to one of the Ethernet (LAN) ports of this client-mode AP.
+9. Configure the desktop computer to obtain an IP address via DHCP.
+10. The desktop computer should now receive an IP address from the root AP's DHCP server and be able to ping the wireless laptop. The client-mode AP is acting as a wireless network adapter for the desktop.
+
+Glossary for Topic 17:
+Root Mode: The standard mode where an AP provides access to a wired network for wireless clients.
+Repeater Mode: A mode that extends wireless coverage by relaying signals from another AP.
+Bridge Mode: A mode that connects two wired networks over a wireless link.
+Workgroup Bridge: A mode where an AP acts as a wireless client for connected wired devices.
+Split-MAC Architecture: A design where real-time and management MAC functions are divided between an AP and a central controller.
+
+Are you ready to proceed to the next topic, Wi-Fi Security?

@@ -1,0 +1,64 @@
+Topic 3: Cisco Configuration Mode
+
+The Cisco IOS CLI is hierarchical and modal. This means you move through different modes, each with a specific purpose and set of available commands. Understanding this hierarchy is fundamental to efficient configuration and troubleshooting. You cannot run a command from the wrong mode.
+
+The main modes form a tree structure:
+
+1. User EXEC Mode (>)
+This is the first mode you enter after logging in. The prompt ends with a `>`.
+Purpose: Limited to basic monitoring and diagnostic commands. You cannot view or change the configuration.
+Commands: `ping`, `traceroute`, `show` (a limited set).
+How to enter: Log in with a password if set.
+How to exit: Use the `enable` command to move to Privileged EXEC mode.
+
+2. Privileged EXEC Mode (#)
+Often called "enable mode." The prompt ends with a `#`.
+Purpose: Provides full access to all `show` and `debug` commands for detailed inspection and testing. You can still not change the configuration here, but you can erase it or reload the device.
+Commands: All `show` commands, `debug`, `copy`, `erase`, `reload`.
+How to enter: From User EXEC mode, use the `enable` command and provide the enable secret password.
+How to exit: Use the `disable` command to return to User EXEC mode.
+
+3. Global Configuration Mode (config)#
+This is the main mode for making configuration changes that affect the entire device. The prompt changes to `(config)#`.
+Purpose: To configure device-wide parameters like hostname, passwords, and to enter specific configuration sub-modes.
+Commands: `hostname`, `enable secret`, `interface`, `line`, `vlan`, `router`.
+How to enter: From Privileged EXEC mode, use the `configure terminal` command (often abbreviated `conf t`).
+How to exit: Use the `exit` command to go back to Privileged EXEC mode. Using `end` or pressing `Ctrl+Z` will also exit from any sub-mode directly back to Privileged EXEC.
+
+4. Specific Configuration Sub-Modes
+From Global Configuration mode, you enter various sub-modes to configure specific components. The prompt changes to indicate where you are.
+Interface Configuration Mode (config-if)#: Entered with the `interface` command (e.g., `interface gigabitethernet0/1`). Used to configure IP addresses, enable/disable the interface, set speed/duplex.
+Line Configuration Mode (config-line)#: Entered with the `line` command (e.g., `line console 0`, `line vty 0 15`). Used to set passwords and timeouts for console and VTY access.
+VLAN Configuration Mode (config-vlan)#: Entered with the `vlan <number>` command. Used to create and name VLANs.
+
+The key to navigating is understanding the prompt and the `exit` vs `end` commands.
+`exit`: Moves you back one step in the mode hierarchy.
+`end` or `Ctrl+Z`: Takes you directly back to Privileged EXEC mode (#) from any configuration mode or sub-mode.
+
+Assignment 3: Navigating Configuration Modes
+
+Objective: To gain muscle memory for moving between different CLI modes.
+1. Connect to a switch in Packet Tracer via the console.
+2. You will start in User EXEC mode (`Switch>`). Type `?` to see the list of available commands. Note you cannot run `show running-config`.
+3. Type `enable` to enter Privileged EXEC mode (`Switch#`). Type `?` again. Notice the command set is larger. Now run `show running-config`.
+4. Type `configure terminal` to enter Global Configuration mode (`Switch(config)#`).
+5. Change the hostname: `hostname MY-SWITCH`.
+6. Enter Interface Configuration mode for a port: `interface fastethernet 0/1`. The prompt is now `MY-SWITCH(config-if)#`.
+7. Try to go back one step: type `exit`. You are now back in Global Configuration mode (`MY-SWITCH(config)#`).
+8. Enter Interface Configuration mode again for the same port.
+9. Now, instead of `exit`, type `end` or press `Ctrl+Z`. You are now directly in Privileged EXEC mode (`MY-SWITCH#`). This is a critical shortcut.
+10. From Privileged EXEC mode, go back to Global Configuration mode.
+11. Now, enter Line Configuration mode for the VTY lines: `line vty 0 15`. The prompt is now `MY-SWITCH(config-line)#`.
+12. Set a password: `password mypassword`.
+13. Use `exit` to go back to Global Configuration mode.
+14. Use `end` to go back to Privileged EXEC mode.
+Practice this navigation until it becomes automatic. This is the foundation for all future configuration.
+
+Glossary for Topic 3:
+User EXEC Mode: The initial CLI mode with limited monitoring commands.
+Privileged EXEC Mode: The administrative mode for viewing statistics and configuration.
+Global Configuration Mode: The mode for making device-wide changes.
+Sub-Mode: A specific configuration mode entered from global configuration (e.g., interface, line).
+Prompt: The text on the CLI that indicates the current mode.
+
+Are you ready to proceed to the next topic, Initial Switch Setup Commands?

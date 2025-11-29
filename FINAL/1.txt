@@ -1,0 +1,53 @@
+Of course. Let's begin.
+
+Topic 1: Cisco Discovery Protocol (CDP)
+
+Cisco Discovery Protocol is a proprietary Layer 2 protocol developed by Cisco. Its primary function is to share basic information between directly connected Cisco devices. Think of it as a neighborly introduction. When two Cisco devices are connected and CDP is enabled, they automatically exchange small messages containing details about themselves. This happens without any IP address configuration, as it operates at the data link layer.
+
+Why is CDP useful?
+For a network administrator, CDP is an invaluable troubleshooting and discovery tool. It allows you to quickly map out your network topology, identify how devices are connected, and see the capabilities of neighboring devices without having to log into each one individually.
+
+What information does CDP share?
+Each device sends out periodic CDP advertisements. These advertisements contain a wealth of information, including:
+Device ID: Typically the hostname of the device.
+Local Interface: The port on which the CDP advertisement is being sent.
+Holdtime: How long the receiving device should keep this information before discarding it.
+Capabilities: What type of device this is (e.g., Router, Switch, Bridge).
+Platform: The model number of the device (e.g., Cisco 2960 Switch).
+IP Address: The IP address of the sending device. This is particularly useful as it gives you the management address of your neighbor.
+Port ID: The interface on the neighboring device that is connected to you.
+Software Version: The version of the IOS operating system.
+
+CDP is enabled by default on all Cisco interfaces. However, for security reasons, it is sometimes disabled on networks where you do not want to reveal device information.
+
+Key CDP Commands:
+show cdp neighbors: This is the most common command. It provides a summary list of directly connected Cisco neighbors, showing device ID, local interface, holdtime, capability, platform, and port ID.
+show cdp neighbors detail: This command provides the complete information received from neighbors, including their IP address and IOS version.
+show cdp interface: This shows which interfaces have CDP enabled and provides information about CDP timers (how often advertisements are sent, and the holdtime).
+cdp run: This global configuration command enables CDP globally for the device.
+no cdp run: Disables CDP globally.
+no cdp enable: Disables CDP on a specific interface.
+
+Assignment 1: Discovering Network Topology with CDP
+
+Objective: To use CDP to map connections and identify neighboring devices.
+1. In Packet Tracer, build a simple topology. Connect two switches together. Then connect a router to one of the switches. Finally, connect two PCs to the switches.
+2. Configure all devices with hostnames:
+   Router: R1
+   Switch1: SW1
+   Switch2: SW2
+3. On the router, configure an IP address on the interface connected to the switch.
+4. Now, begin your discovery. Go to the console of SW1.
+5. In privileged EXEC mode, run the command `show cdp neighbors`. You should see at least two neighbors: The router (R1) on one port and the other switch (SW2) on another port. Note the local interface (the port on SW1) and the port ID (the port on the neighbor).
+6. Now, run `show cdp neighbors detail` on SW1. Look for the detailed information about the router R1. Find its IP address. This is the management IP you would use to telnet or SSH into it.
+7. From SW1, you now know R1's IP address. Open a command prompt on a PC connected to SW1 and try to ping R1's IP address. It should work if the PC is in the same subnet.
+8. Now, go to the router R1 and run `show cdp neighbors`. You should see SW1 listed as a neighbor.
+9. Use CDP on all devices to create a physical map of your network. Draw it on paper, labeling each device with its hostname and the interfaces used for connections.
+
+Glossary for Topic 1:
+CDP: A Cisco-proprietary Layer 2 protocol for network discovery.
+Holdtime: The duration a device retains a CDP advertisement from a neighbor.
+Capabilities: The function of a device advertised by CDP (Router, Switch, etc.).
+Port ID: The interface on a neighboring device.
+
+Are you ready to proceed to the next topic, EtherChannel (LACP)?

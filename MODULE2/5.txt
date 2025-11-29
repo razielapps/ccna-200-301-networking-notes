@@ -1,0 +1,66 @@
+Topic 5: VLAN - Virtual Local Area Networks
+
+By default, all ports on a switch belong to VLAN 1 and are in one broadcast domain. This is a major limitation for security and network efficiency. A Virtual LAN (VLAN) is a technology that allows you to create logically separate networks within a single physical switch. Each VLAN is its own independent broadcast domain. Devices in one VLAN cannot communicate with devices in another VLAN unless a router or Layer 3 switch is used to route traffic between them.
+
+Why use VLANs?
+1. Security: You can separate sensitive traffic. For example, you can put the Finance department in one VLAN and the Marketing department in another, preventing unauthorized access between them.
+2. Performance: By reducing the size of broadcast domains, you limit the scope of broadcast traffic (like ARP requests). This frees up bandwidth and improves performance for all devices.
+3. Network Management: You can logically group users by function, not by their physical location. Users can move to different offices but remain on the same VLAN if they connect to a switch port assigned to their VLAN.
+
+VLAN Types:
+Data VLAN: Used for regular user traffic. This is the most common type.
+Default VLAN: VLAN 1. All switch ports are in this VLAN by default. It is a security best practice to not use VLAN 1 for user traffic.
+Native VLAN: This is a VLAN assigned to an 802.1Q trunk port that carries untagged traffic. By default, this is also VLAN 1. It should be changed to an unused VLAN for security.
+Management VLAN: The VLAN you assign an IP address to for managing the switch. It is a best practice to use a dedicated VLAN (not VLAN 1) for this purpose.
+
+VLAN Operation:
+A switch port can be either an Access Port or a Trunk Port.
+Access Port: Belongs to a single VLAN. It connects to end devices like computers, printers, and servers. Traffic sent out an access port is a standard Ethernet frame (untagged). When a frame arrives on an access port, the switch automatically tags it with the VLAN ID of that port internally.
+Trunk Port: Carries traffic for multiple VLANs. It connects to other switches or routers. To identify which VLAN a frame belongs to, the switch uses an 802.1Q tag. It adds a 4-byte header to the Ethernet frame that contains the VLAN ID (12 bits, allowing for VLANs 1-4094). The receiving switch reads this tag to know which VLAN the frame is for.
+
+Basic VLAN Configuration Commands:
+1. Create a VLAN:
+   SW1(config)# vlan 10
+   SW1(config-vlan)# name FINANCE
+2. Assign an Access Port to a VLAN:
+   SW1(config)# interface fastethernet 0/1
+   SW1(config-if)# switchport mode access
+   SW1(config-if)# switchport access vlan 10
+
+Verification Commands:
+show vlan brief: Displays a list of all VLANs and the access ports assigned to them.
+show interfaces switchport: Shows detailed switchport information, including the operational mode and VLAN.
+
+Assignment 5: Creating and Assigning VLANs
+
+Objective: To segment a single switch into multiple logical networks using VLANs.
+1. In Packet Tracer, create a topology with one 2960 switch and four PCs.
+2. Connect PC1 to Fa0/1, PC2 to Fa0/2, PC3 to Fa0/3, PC4 to Fa0/4.
+3. Configure IP addresses:
+   PC1: 192.168.10.1/24
+   PC2: 192.168.10.2/24
+   PC3: 192.168.20.1/24
+   PC4: 192.168.20.2/24
+4. Without VLANs, all PCs can ping each other because they are in the same broadcast domain. Verify this by pinging between PC1 and PC3.
+5. Now, configure the switch.
+   Create VLAN 10 and name it SALES.
+   Create VLAN 20 and name it ENGINEERING.
+6. Assign the switch ports:
+   Assign interface Fa0/1 and Fa0/2 to VLAN 10.
+   Assign interface Fa0/3 and Fa0/4 to VLAN 20.
+7. Save your configuration.
+8. Now, try the pings again.
+   PC1 should be able to ping PC2 (same VLAN).
+   PC3 should be able to ping PC4 (same VLAN).
+   PC1 should NOT be able to ping PC3 or PC4 (different VLAN).
+   PC2 should NOT be able to ping PC3 or PC4 (different VLAN).
+9. Use the `show vlan brief` command on the switch to verify your port assignments. You should see Fa0/1 and Fa0/2 under VLAN 10, and Fa0/3 and Fa0/4 under VLAN 20.
+
+Glossary for Topic 5:
+VLAN: A logical grouping of devices on separate broadcast domains within a single physical switch.
+Access Port: A switch port that carries traffic for only one VLAN.
+Trunk Port: A switch port that uses 802.1Q tagging to carry traffic for multiple VLANs.
+802.1Q: The IEEE standard for Ethernet trunking.
+Broadcast Domain: The set of all devices that will receive a broadcast frame sent by any one device in the set.
+
+Are you ready to proceed to the next topic, Layer 3 Switch?

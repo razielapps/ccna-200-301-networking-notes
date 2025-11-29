@@ -1,0 +1,57 @@
+Topic 8: Static Routing
+
+Static routing provides explicit, administrator-defined paths between networks. It offers precise control over routing behavior, which is its primary advantage. You decide the exact path traffic will take. This makes it predictable and simple for small, stable networks. However, it does not scale well. In a large network, adding a new network would require configuring a static route on every single router that needs to know about it. Furthermore, static routes lack dynamism; if a link fails, the static route remains in the table and traffic will be black-holed until an administrator manually intervenes.
+
+There are several types of static routes, each with a specific use case:
+
+1. Standard Static Route: This is the basic form, pointing to a next-hop IP address.
+   `ip route 192.168.2.0 255.255.255.0 10.1.1.2`
+   This is used when the next-hop IP address is known and reachable.
+
+2. Directly Attached Static Route: This route points to the router's own exit interface.
+   `ip route 192.168.2.0 255.255.255.0 Serial0/0/0`
+   This is primarily used on point-to-point serial links. The router can resolve the Layer 2 address without needing a specific next-hop IP.
+
+3. Fully Specified Static Route: This includes both the next-hop IP AND the exit interface.
+   `ip route 192.168.2.0 255.255.255.0 Serial0/0/0 10.1.1.2`
+   This is less common but can be used in specific scenarios, like over Ethernet, to avoid an extra ARP lookup.
+
+4. Default Static Route: The catch-all gateway. It is used to direct traffic for any destination not found in the routing table, typically towards an ISP or a central core network.
+   `ip route 0.0.0.0 0.0.0.0 203.0.113.1`
+
+5. Floating Static Route: This is a backup route. It has an administrative distance (AD) higher than that of a primary route (like one learned from a dynamic protocol). The route remains in the configuration but is not installed in the routing table unless the primary route fails. Administrative Distance is a measure of the trustworthiness of a route source. Lower AD is preferred. A directly connected route has an AD of 0, a static route has an AD of 1, and OSPF has an AD of 110.
+   `ip route 192.168.2.0 255.255.255.0 10.1.1.50 200`
+   This static route will only be used if the primary route (e.g., via OSPF) is lost.
+
+When configuring static routes, you must ensure reachability is bidirectional. Just because R1 has a route to R3's network does not mean R3 has a route back to R1's network. Asymmetric routing can cause problems. You must configure routes on both ends.
+
+Verification and Troubleshooting:
+`show ip route static`: Shows only the static routes in the table.
+`show ip route [network]`: Shows a specific route and how it was learned.
+`traceroute`: The most important tool for verifying the path traffic takes.
+
+Assignment 8: Implementing a Floating Static Route for Redundancy
+
+Objective: To configure a primary static route and a backup floating static route that becomes active only when the primary fails.
+1. In Packet Tracer, build a network with three routers. R1 connected to R2 via one link (e.g., Serial), and R1 connected to R3 via a different link (e.g., another Serial or FastEthernet). R2 and R3 are both connected to a central network, e.g., 192.168.100.0/24.
+2. Configure IP addresses appropriately. Assume the link between R1 and R2 is the primary path, and the link between R1 and R3 is the backup.
+3. On R1, configure a standard static route to the 192.168.100.0/24 network via R2 (the next-hop IP on the R1-R2 link). This will have the default AD of 1.
+   `ip route 192.168.100.0 255.255.255.0 [R2_next_hop_ip]`
+4. Now, on R1, configure a floating static route to the same network via R3, but with a higher AD, e.g., 5.
+   `ip route 192.168.100.0 255.255.255.0 [R3_next_hop_ip] 5`
+5. Check R1's routing table with `show ip route`. You should only see the primary static route via R2. The floating route is in the configuration but not in the routing table because its AD (5) is worse than the primary (1).
+6. From a PC on R1's local network, ping a device on the 192.168.100.0 network. Use `traceroute` to confirm the path goes through R2.
+7. Now, simulate a failure. Shut down the interface on R1 that connects to R2.
+   `interface s0/0/0`
+   `shutdown`
+8. Immediately check R1's routing table again (`show ip route`). The primary static route via R2 should be gone. The floating static route via R3 should now appear in the routing table because it is the only available path.
+9. Run the ping and traceroute again from the PC. The connection should be maintained, but the path will now go through R3, the backup link.
+10. Bring the primary interface back up (`no shutdown`). The primary route will reappear in the table, and the floating route will be removed, restoring the original path.
+
+Glossary for Topic 8:
+Administrative Distance (AD): A value that rates the trustworthiness of a routing information source.
+Floating Static Route: A backup static route configured with a higher AD than the primary route.
+Next-Hop IP: The IP address of the adjacent router to which traffic should be forwarded.
+Bidirectional Reachability: The requirement that for two networks to communicate, routers in both paths must have routes to each other.
+
+Are you ready to proceed to the final topic, Dynamic Routing (OSPF, EIGRP)?

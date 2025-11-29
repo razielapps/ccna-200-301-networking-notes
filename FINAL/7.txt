@@ -1,0 +1,66 @@
+Of course. Let's proceed.
+
+Topic 7: Simple Network Management Protocol (SNMP)
+
+Simple Network Management Protocol (SNMP) is an application layer protocol (UDP port 161) used to manage and monitor network devices like routers, switches, servers, and printers. It provides a standardized framework for a central management system to query devices for information and receive alerts from them. Think of it as a universal remote control and monitoring system for your entire network infrastructure.
+
+The SNMP architecture consists of three main components:
+
+1. SNMP Manager: This is the central system that runs the network management software. It is the "boss" that polls the agents for data and receives trap messages. It is often called a Network Management Station (NMS).
+
+2. SNMP Agent: This is the software that runs on the managed network device (router, switch, etc.). Its job is to collect and store management data about the device locally in a database called the Management Information Base (MIB). It responds to requests from the SNMP Manager and can send unsolicited alerts (Traps).
+
+3. Management Information Base (MIB): This is a hierarchical database that defines the specific data points on a device that can be managed. Each data point is called an Object Identifier (OID). It is a standardized tree structure. For example, there is a specific OID for a device's system name, another for interface status, and another for CPU utilization. The MIB is essentially the dictionary that both the Manager and Agent use to understand each other.
+
+SNMP operates in two main ways:
+Polling: The SNMP Manager periodically requests (polls) the Agents for specific information. This is how the manager collects data for graphs and reports.
+Traps: The SNMP Agent can be configured to send an unsolicited message (a Trap) to the Manager when a significant event occurs, like an interface going down or a CPU threshold being exceeded. This allows for immediate notification of problems.
+
+SNMP has different versions with important security differences:
+SNMPv1 and SNMPv2c: These versions use a simple community string-based security model. The community string is a plain-text password shared between the manager and the agent. There are two types:
+Read-Only (RO) community string: Allows the manager to read MIB information (for monitoring).
+Read-Write (RW) community string: Allows the manager to read and change MIB information (for configuration).
+These versions are insecure because the community strings are sent in clear text.
+
+SNMPv3: This is the current standard and should always be used in production. It provides strong security through:
+Authentication: Ensures the message is from a valid source.
+Encryption: Scrambles the data to prevent eavesdropping.
+Integrity: Ensures the data has not been tampered with in transit.
+
+Basic SNMP Configuration (SNMPv2c for simplicity):
+To configure a Cisco device as an SNMP Agent:
+snmp-server community [community_string] RO: Configures a Read-Only community string.
+snmp-server community [community_string] RW: Configures a Read-Write community string (use with extreme caution).
+snmp-server host [manager_ip] traps [community_string]: Specifies the IP address of the SNMP Manager to send traps to.
+
+Verification Command:
+show snmp: Displays SNMP statistics and configuration.
+
+Assignment 7: Configuring a Router for SNMP Monitoring
+
+Objective: To configure SNMP on a router and observe how a management system can collect data.
+1. In Packet Tracer, use one router and one server. Connect them via a switch.
+2. Configure the router with an IP address on its GigabitEthernet interface (e.g., 192.168.1.1/24).
+3. Configure the server with an IP address in the same subnet (e.g., 192.168.1.100/24). This server will act as the SNMP Manager.
+4. On the router, configure SNMPv2c.
+   Router(config)# snmp-server community public RO
+   Router(config)# snmp-server community private RW
+   Router(config)# snmp-server host 192.168.1.100 version 2c public
+5. On the server in Packet Tracer, go to the 'Services' tab and select SNMP. Start the SNMP service.
+6. Now, use the server's command prompt to simulate an SNMP Manager query. We will use a ping to simulate a basic check, but in reality, specialized software would be used.
+   From the server, ping the router's IP address (192.168.1.1). This verifies connectivity.
+7. To better understand the concept, manually change an OID-specified value. Change the router's hostname via SNMP's theoretical write access.
+   While this is simulated in Packet Tracer, the concept is that the NMS would use the RW community string "private" to send a command that changes the system name OID.
+   In the real world, you would use commands like snmpset from a network management station.
+8. Use the show snmp command on the router to see the activity. You might see output counters incrementing, indicating SNMP is running.
+
+Glossary for Topic 7:
+SNMP: A protocol for managing and monitoring network devices.
+SNMP Manager: The central management system.
+SNMP Agent: The software on a managed device.
+MIB: The database of manageable objects on a device.
+OID: The unique identifier for a managed object within a MIB.
+Community String: A plain-text password used in SNMPv1/v2c.
+Trap: An unsolicited alert sent from an agent to a manager.
+
+Are you ready to proceed to the next topic?

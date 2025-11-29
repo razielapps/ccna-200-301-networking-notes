@@ -1,0 +1,43 @@
+Of course. Let's begin the next module with a strong practical focus.
+
+Topic 1: Network Access - The Foundation of Layer 2
+
+We are moving into the world of switching. This happens at the Data Link layer (Layer 2) and is all about how devices access the network medium and how switches intelligently forward frames. The key technology here is Ethernet, which uses CSMA/CD.
+
+CSMA/CD (Carrier Sense Multiple Access with Collision Detection) is the rulebook for how devices share a half-duplex medium. Think of it as a polite conversation in a dark room where everyone has to listen before they speak.
+Carrier Sense: A device listens to the wire to see if it's quiet (no other device is talking).
+Multiple Access: Many devices have access to the same shared medium.
+Collision Detection: If two devices start talking at the same time, a collision occurs. They detect this, stop, wait for a random backoff time, and then try again.
+In modern full-duplex switched networks, collisions are virtually eliminated because switches create dedicated point-to-point links. CSMA/CD is mostly legacy but fundamental to understand.
+
+The core function of a switch is to build and use a MAC Address Table. This table maps MAC addresses to the specific switch port where they are learned. The switch operates based on three frame processes:
+Flooding: When a switch receives a frame for a destination MAC address that is not in its table, it sends the frame out of all ports except the one it came from. This is also done for broadcast frames (FF:FF:FF:FF:FF:FF).
+Forwarding: When the destination MAC address is found in the table, the switch forwards the frame only out of the specific port listed in the table.
+Filtering: If the source and destination MAC addresses are on the same port, the switch filters (drops) the frame. This prevents unnecessary traffic.
+
+A collision domain is a network segment where data packets can collide. A hub creates one large collision domain. A switch breaks up the network into multiple collision domains, with each port being its own separate collision domain. This dramatically improves network performance.
+
+A broadcast domain is the area where a broadcast frame can reach. By default, a switch forwards broadcasts out all ports, meaning all devices connected to a switch are in one broadcast domain. Only a router or a Layer 3 device can break up a broadcast domain.
+
+Assignment 1: Observing MAC Address Table Operation
+
+Objective: To see how a switch learns MAC addresses and forwards traffic.
+1. In Packet Tracer, create a topology with one 2960 switch and three PCs.
+2. Connect PC1 to Switchport Fa0/1, PC2 to Fa0/2, and PC3 to Fa0/3.
+3. Assign IP addresses in the same subnet, e.g., PC1: 192.168.1.1/24, PC2: 192.168.1.2/24, PC3: 192.168.1.3/24.
+4. Open the switch's CLI. Enter privileged EXEC mode with `enable` and then view the MAC address table with `show mac-address-table`. It should be empty.
+5. From PC1, ping PC2 (ping 192.168.1.2).
+6. Immediately go back to the switch CLI and run `show mac-address-table` again. You will now see two entries: one for PC1's MAC address on Fa0/1 and one for PC2's MAC address on Fa0/2. The switch learned these from the source addresses of the frames sent during the ping.
+7. Now, from PC1, ping PC3. The switch will already know PC1's MAC address, and after this ping, it will have learned PC3's MAC address as well.
+8. Run `show mac-address-table` again to see the complete table. This demonstrates the switch's learning and forwarding process.
+
+Glossary for Topic 1:
+CSMA/CD: The protocol for managing data transmission on a shared medium to avoid collisions.
+MAC Address Table: A switch's database that maps MAC addresses to physical ports.
+Flooding: The switch action of sending a frame to all ports except the inbound port.
+Forwarding: The switch action of sending a frame to a specific port.
+Filtering: The switch action of dropping a frame when the source and destination are on the same port.
+Collision Domain: A network segment where data collisions can occur.
+Broadcast Domain: A network segment where broadcast frames are forwarded.
+
+Are you ready to proceed to the next topic, Switch Management?

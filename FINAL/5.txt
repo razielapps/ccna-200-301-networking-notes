@@ -1,0 +1,87 @@
+Of course. Let's proceed.
+
+Topic 5: WAN Technologies - HDLC, PPP, and Frame Relay
+
+WAN technologies are used to connect geographically separated networks. They operate at the physical and data link layers of the OSI model. We will cover three important WAN protocols: HDLC, PPP, and Frame Relay.
+
+HDLC (High-Level Data Link Control)
+HDLC is a simple, efficient bit-oriented data link layer protocol. It is the default encapsulation type on Cisco router serial interfaces. HDLC provides a frame structure for point-to-point links but offers no authentication or other advanced features. Because it is proprietary to Cisco, it typically only works when connecting a Cisco router to another Cisco router. If you connect a Cisco router to a non-Cisco router, you will likely need to use PPP.
+
+PPP (Point-to-Point Protocol)
+PPP is a more robust and standardized WAN protocol than HDLC. It is used over point-to-point links and provides several important features that HDLC lacks.
+1. Authentication: PPP can authenticate the remote device before establishing a link. It supports two protocols for this:
+   PAP (Password Authentication Protocol): Sends the username and password in plain text. It is not secure.
+   CHAP (Challenge Handshake Authentication Protocol): Uses a three-way handshake and a hashed value to authenticate without sending the password in clear text. CHAP is secure and is the recommended method.
+2. Multi-protocol Support: PPP can carry packets from multiple network layer protocols (like IP, IPX) over the same link.
+3. Link Quality Monitoring: PPP can monitor the quality of the link and can drop it if the quality falls below a set level.
+4. Loopback Detection: Can detect if a link is looped.
+
+Basic PPP Configuration with CHAP:
+Step 1: Set the encapsulation to PPP on the serial interface.
+Router(config)# interface serial 0/0/0
+Router(config-if)# encapsulation ppp
+Step 2: Configure CHAP authentication. You must set a hostname and a shared secret password that is identical on both routers.
+Router(config)# hostname R1
+R1(config)# username R2 password my_shared_secret
+R1(config)# interface s0/0/0
+R1(config-if)# ppp authentication chap
+
+Frame Relay
+Frame Relay is a packet-switching technology that was very popular for connecting LANs over a WAN. It is a non-broadcast multi-access (NBMA) technology, meaning multiple devices share the same medium, but it has no built-in broadcast capability.
+Key Components:
+PVC (Permanent Virtual Circuit): A logical, predefined path through the Frame Relay cloud between two devices. This is like a dedicated virtual leased line.
+DLCI (Data Link Connection Identifier): A number that identifies a PVC on a Frame Relay link. It is a locally significant address, meaning it only has meaning between your router and the Frame Relay switch.
+LMI (Local Management Interface): A signaling standard used between your router and the local Frame Relay switch. It manages the connection and reports the status of PVCs.
+
+Frame Relay operates by mapping a DLCI to a next-hop IP address. This is done with a frame-relay map statement or by using Inverse ARP, which dynamically discovers the mapping.
+A key concept in Frame Relay is the NBMA nature, which can cause reachability issues for routing protocols that rely on broadcasts or multicasts. The frame-relay map command can be used to statically map a next-hop IP address to a DLCI and also enable broadcasting over that PVC.
+
+Basic Frame Relay Configuration (Using Inverse ARP):
+Router(config)# interface serial 0/0/0
+Router(config-if)# encapsulation frame-relay (Sets the encapsulation)
+Router(config-if)# ip address 10.1.1.1 255.255.255.0
+Router(config-if)# no shutdown
+
+Verification Commands for WAN:
+show interfaces: Check the encapsulation and status of the serial interface.
+show controllers serial [interface]: To check if the cable is DCE and needs a clock rate command.
+For PPP: debug ppp authentication
+For Frame Relay: show frame-relay pvc, show frame-relay map, show frame-relay lmi
+
+Assignment 5: Configuring PPP with CHAP Authentication
+
+Objective: To establish a secure point-to-point WAN link using PPP and CHAP.
+1. In Packet Tracer, use two routers connected back-to-back with a serial cable. Designate one end as the DCE and set a clock rate (e.g., 64000).
+2. Configure basic IP addresses on the serial interfaces, but do not set an encapsulation yet.
+   R1 S0/0/0: 192.168.1.1/30
+   R2 S0/0/0: 192.168.1.2/30
+3. Try to ping from R1 to R2. It may fail because the default HDLC encapsulation might not be compatible if Packet Tracer simulates different vendors.
+4. Now, configure PPP encapsulation on both routers.
+   R1(config)# interface s0/0/0
+   R1(config-if)# encapsulation ppp
+   R2(config)# interface s0/0/0
+   R2(config-if)# encapsulation ppp
+5. Verify the link comes up with show interfaces s0/0/0. The ping should now work.
+6. Now, configure CHAP authentication to secure the link.
+   On R1:
+   R1(config)# hostname R1
+   R1(config)# username R2 password secure123
+   R1(config)# interface s0/0/0
+   R1(config-if)# ppp authentication chap
+   On R2:
+   R2(config)# hostname R2
+   R2(config)# username R1 password secure123
+   R2(config)# interface s0/0/0
+   R2(config-if)# ppp authentication chap
+7. The link will momentarily reset and re-establish. Use the debug ppp authentication command on either router to observe the CHAP handshake process.
+8. Verify the link is up and authenticated by pinging the other side.
+
+Glossary for Topic 5:
+HDLC: A simple, proprietary Cisco serial encapsulation.
+PPP: A standard WAN protocol offering features like authentication.
+CHAP: A secure authentication protocol for PPP.
+Frame Relay: A NBMA packet-switching WAN technology.
+PVC: A permanent virtual circuit in Frame Relay.
+DLCI: The locally significant address for a Frame Relay PVC.
+
+Are you ready to proceed to the next topic?

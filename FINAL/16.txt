@@ -1,0 +1,66 @@
+Of course. Let's proceed.
+
+Topic 16: WLAN Architecture
+
+WLAN Architecture defines how the hardware components of a wireless network are organized and managed. There are two primary architectural models: Autonomous and Controller-Based. The choice of architecture has major implications for scalability, management, and features.
+
+Autonomous Architecture (Standalone):
+This is the traditional model. Each Access Point is a independent, self-contained unit. It handles all WLAN functions by itself, including:
+- Broadcasting its SSID
+- Authenticating clients
+- Encrypting traffic
+- Forwarding data between wireless and wired networks
+- Applying security policies
+
+Think of this as a network of independent shops, each with its own manager making all the decisions. This model is simple and works for very small deployments, like a single home or a small office with one or two APs. However, it does not scale. Managing dozens or hundreds of autonomous APs means logging into each one individually to change the SSID, security settings, or channel plan. There is no central point of control or visibility.
+
+Controller-Based Architecture (Centralized):
+This is the standard for all medium to large enterprise networks. In this model, the APs are "lightweight." They do not make major decisions on their own. Instead, they rely on a central WLAN Controller for management, configuration, and often for data forwarding.
+
+The key protocol that enables this is the Control and Provisioning of Wireless Access Points (CAPWAP). CAPWAP creates a secure tunnel between the lightweight AP and the WLAN Controller. This tunnel carries two types of traffic:
+- Control Traffic: Management messages, client authentication, and roaming decisions.
+- Data Traffic: The actual user data from wireless clients.
+
+There are two main data forwarding models in a controller-based architecture:
+1. Centralized (Tunneled) Data Forwarding: All user data from the AP is encapsulated inside the CAPWAP tunnel and sent to the controller. The controller then de-encapsulates the traffic and forwards it onto the wired network. This provides a single point of policy enforcement and traffic analysis but can become a bottleneck for very high-density networks.
+2. Local (FlexConnect) Data Forwarding: The AP itself switches user data directly onto the local wired network, bypassing the controller. This is used for branch offices where the controller is in a central data center, as it saves WAN bandwidth. The control plane (management) still goes to the central controller.
+
+The controller-based model provides huge advantages:
+- Centralized Management: Configure and monitor thousands of APs from a single interface.
+- Automated RF Management: The controller automatically assigns channels and power levels to APs to optimize coverage and minimize interference.
+- Seamless Roaming: Clients can move between APs without re-authenticating because the controller manages the session.
+- Enhanced Security and Policies: Security policies are applied consistently across the entire network.
+
+A third, modern architecture is Cloud-Based, where the management function of the controller is moved to the cloud. The APs connect to a cloud-based management platform. This offers the benefits of a controller without the need for on-premises hardware.
+
+Assignment 16: Comparing Autonomous and Controller-Based AP Modes
+
+Objective: To configure both an autonomous AP and a lightweight AP connected to a WLAN Controller and observe the difference in management.
+1. In Packet Tracer, create a topology with two separate networks.
+   Network A: One autonomous AP connected to a switch. Connect a laptop to this wireless network.
+   Network B: One WLC (Wireless LAN Controller) and one lightweight AP connected to a switch. Connect another laptop to this network.
+2. Configure the Autonomous AP (Network A):
+   - Access the AP's graphical interface.
+   - Manually set the SSID to "Autonomous-Net".
+   - Manually set the channel to 6 and the power level to 100%.
+   - Configure WPA2-Personal security with a pre-shared key.
+3. Configure the Controller-Based Network (Network B):
+   - First, configure the WLC. Set a management IP address on the WLC.
+   - In the WLC interface, create a new WLAN (SSID). Name it "Controller-Net". Apply WPA2-Personal security.
+   - The lightweight AP will automatically discover the WLC (via DHCP options or DNS) and form a CAPWAP tunnel. You should see the AP appear in the WLC's list of managed APs.
+   - In the WLC, you can now see both the WLAN "Controller-Net" and the AP that is broadcasting it.
+4. Connect a laptop to each network ("Autonomous-Net" and "Controller-Net") to verify they work.
+5. Now, simulate a change. Suppose you need to change the PSK for both networks.
+   - For the Autonomous AP: You must log into its web interface, navigate to the wireless security settings, and change the key. You then have to inform all users of the new key.
+   - For the Controller-Based Network: You log into the WLC, find the "Controller-Net" WLAN, and change the PSK. This change is instantly and automatically pushed to every single AP that is broadcasting this SSID. There is only one place to make the change.
+6. This demonstrates the fundamental management difference. The autonomous model requires configuring each device individually, while the controller model allows for centralized configuration that is propagated to many devices at once.
+
+Glossary for Topic 16:
+Autonomous AP: A self-contained, independently managed access point.
+Lightweight AP: An access point that relies on a central controller for management and configuration.
+WLAN Controller: The central device that manages lightweight APs.
+CAPWAP: The protocol used for communication between a lightweight AP and a WLAN controller.
+Centralized Data Forwarding: A model where all user traffic is tunneled to the controller.
+Local Data Forwarding: A model where user traffic is switched locally at the AP.
+
+Are you ready to proceed to the next topic, Access Point Modes?

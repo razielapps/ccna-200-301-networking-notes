@@ -1,0 +1,111 @@
+
+We have talked about devices and the models they use to communicate. Now we need to talk about how we find them. On a local network, we use MAC addresses. But MAC addresses are like personal names; they don't tell you where a person lives. To communicate across different networks, we need a logical addressing system that has hierarchy, just like a postal address. This is where IP Addressing comes in. It is the fundamental language of location on a TCP/IP network, and it is absolutely critical for the CCNA.
+
+Let's start with the basics. An IP address is a unique identifier assigned to each device on a network. The most common version, which we will focus on first, is IPv4. An IPv4 address is a 32-bit number. But we don't write it out in ones and zeros. We write it in Dotted Decimal Notation for human readability.
+
+What does 32-bit mean? It means the address is made of 32 binary digits (bits). We group these 32 bits into four sections of 8 bits each, called Octets. Each octet is converted from binary to its decimal equivalent. So, an IP address looks like this: 192.168.1.1
+
+Each of those four numbers can range from 0 to 255 because an 8-bit binary number can represent 256 unique values (from 0 to 255).
+
+The Two Parts of an IP Address: Network and Host
+
+This is the most important concept in all of IP addressing. An IP address is not a single, flat identifier. It is divided into two parts:
+
+1. The Network Part: This part identifies the specific network that the device belongs to. Think of this as the street name and city in a postal address. Every device on the same local network must have the exact same network portion of their IP address.
+
+2. The Host Part: This part identifies the specific device within that network. Think of this as the house number on a street. Every device on the same local network must have a unique host portion.
+
+How does a device know which part of the address is the network and which is the host? This is determined by the Subnet Mask.
+
+The Subnet Mask
+
+The subnet mask is a 32-bit number, just like the IP address, that is always paired with an IP address. Its job is to clearly delineate the network and host portions. A binary '1' in the subnet mask indicates that the corresponding bit in the IP address is part of the network portion. A binary '0' indicates that it is part of the host portion.
+
+A typical subnet mask for a home network is 255.255.255.0. Let's break that down in binary:
+
+IP Address: 192 . 168 . 1 . 10
+In Binary: 11000000.10101000.00000001.00001010
+
+Subnet Mask: 255 . 255 . 255 . 0
+In Binary: 11111111.11111111.11111111.00000000
+
+Where there are 1s in the mask, the IP address bits are the network part. Where there are 0s, the IP address bits are the host part. So, in this case:
+Network Part: 192.168.1
+Host Part: 10
+
+This means the device with IP 192.168.1.10 is on the 192.168.1.0 network and has a host ID of 10.
+
+The Role of the Default Gateway
+
+The default gateway is the IP address of the router interface that is on your local network. It is the "door" out of your local network. When your computer wants to send data to a device on a different network (like a server on the internet), it sends the data to its default gateway. The router then takes over and uses its routing table to forward the data towards the final destination. Without a default gateway, your device is trapped inside its own local network.
+
+Classful Addressing (The Old Way)
+
+Originally, IP addresses were divided into fixed classes. You need to know these for the CCNA, even though they are mostly obsolete, because the concepts are foundational.
+
+Class A: The first bit is always 0. The first octet (1-126) is the network part. This allows for a very small number of very large networks, each with millions of hosts. (127.0.0.0 is reserved for loopback). Default Mask: 255.0.0.0
+
+Class B: The first two bits are 10. The first two octets (128.0 - 191.255) are the network part. This allows for a medium number of medium-sized networks. Default Mask: 255.255.0.0
+
+Class C: The first three bits are 110. The first three octets (192.0.0 - 223.255.255) are the network part. This allows for a large number of small networks. Default Mask: 255.255.255.0
+
+Class D: Used for multicast (224.0.0.0 - 239.255.255.255)
+Class E: Reserved for experimental use.
+
+The concept of classes was too rigid and wasted many IP addresses. This led to the modern method.
+
+Classless Inter-Domain Routing (CIDR)
+
+CIDR, pronounced "cider," is the modern, flexible way of assigning IP addresses. It allows us to break the rigid class boundaries and create subnets of any size. With CIDR, we specify the subnet mask using a slash notation, which is simply the number of '1's in the subnet mask.
+
+For example:
+255.255.255.0 in binary has 24 ones. So, we write it as /24.
+An IP address would be written as 192.168.1.10/24.
+
+This is much more efficient. We can have a subnet with 500 hosts (/23), or one with just 2 hosts (/30) for a point-to-point link.
+
+Public vs. Private IP Addresses
+
+Not every device on the planet needs a globally unique IP address. To conserve the limited number of IPv4 addresses, we have designated certain ranges as Private IP Addresses. These addresses are not routable on the public internet. They are for use within our own private networks (homes, offices).
+
+The key private ranges are:
+Class A: 10.0.0.0 to 10.255.255.255 (10.0.0.0/8)
+Class B: 172.16.0.0 to 172.31.255.255 (172.16.0.0/12)
+Class C: 192.168.0.0 to 192.168.255.255 (192.168.0.0/16)
+
+Your home router uses one of these, typically 192.168.1.0/24. When a device with a private IP needs to communicate with the internet, the router performs Network Address Translation (NAT), swapping the private IP for the router's own public IP address.
+
+The Loopback Address
+
+The address range 127.0.0.0/8 (most commonly 127.0.0.1) is reserved for the loopback interface. This is a virtual interface on a device that allows it to communicate with itself. It is used for testing the device's own TCP/IP network stack. If you can ping 127.0.0.1, your own network software is working correctly.
+
+Introduction to IPv6
+
+We are running out of IPv4 addresses. IPv6 is the solution. It uses a 128-bit address, which is an astronomically larger number than IPv4's 32-bit. An IPv6 address looks like this: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+
+It is written in hexadecimal and separated by colons. The main benefits are vast address space, built-in security (IPsec), and simplified header for more efficient routing. While IPv4 is still dominant, understanding IPv6 is essential for the modern CCNA.
+
+Why IP Addressing is Crucial for the CCNA
+
+This is the core of networking. Every routing decision, every access control list, every network design is based on IP addressing. You will spend a significant amount of time learning to subnet, which is the practice of taking a large network and dividing it into smaller, more efficient sub-networks. Mastering subnetting is non-negotiable for passing the CCNA exam.
+
+Glossary for IP Addressing
+
+IP Address: A unique logical identifier for a device on a network.
+IPv4: The most common version of IP, using a 32-bit address.
+Bit: A single binary digit, either a 1 or a 0.
+Octet: A group of 8 bits. An IPv4 address has 4 octets.
+Dotted Decimal Notation: The human-readable format for an IPv4 address (e.g., 192.168.1.1).
+Network Part: The portion of an IP address that identifies the network.
+Host Part: The portion of an IP address that identifies the specific device.
+Subnet Mask: A 32-bit number used to distinguish the network and host parts of an IP address.
+Default Gateway: The IP address of the router on the local network; the exit point to other networks.
+Classful Addressing: The original, rigid system of dividing IP addresses into Classes A, B, and C.
+CIDR (Classless Inter-Domain Routing): The modern, flexible method of IP addressing that uses slash notation.
+Slash Notation (Prefix Length): The number of bits in the subnet mask (e.g., /24).
+Public IP Address: A globally unique, routable address on the internet.
+Private IP Address: An address from a reserved range used for internal networks, not routable on the internet.
+NAT (Network Address Translation): A technology that allows private IP addresses to access the internet by translating them to a public IP.
+Loopback Address: A special address (127.0.0.1) a device uses to communicate with itself.
+IPv6: The next-generation IP protocol with a 128-bit address space.
+

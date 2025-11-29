@@ -1,0 +1,87 @@
+Of course. Let's proceed.
+
+Topic 2: EtherChannel (LACP)
+
+EtherChannel is a technology that bundles multiple physical Ethernet links into a single logical link. Think of it as taking several two-lane roads and combining them into one wide superhighway. The main goals are to provide increased bandwidth, load balancing, and redundancy. If one physical link within the bundle fails, traffic is automatically redistributed over the remaining links with no loss of connectivity. This provides a high availability.
+
+There are two protocols used to negotiate an EtherChannel:
+1. PAgP (Port Aggregation Protocol): This is a Cisco-proprietary protocol. It is not as common in modern multi-vendor environments.
+2. LACP (Link Aggregation Control Protocol): This is the IEEE standard (802.3ad) and is the protocol you will use most often. It allows for interoperability between devices from different vendors.
+
+An EtherChannel group can consist of up to 8 active physical ports. You can also have additional ports in a standby state to replace a failed active link.
+
+LACP Mode Configuration:
+When configuring an interface for an EtherChannel, you set an LACP mode. The mode on one side must be compatible with the mode on the other side for the channel to form.
+on: This mode forces the interface into an EtherChannel without using PAgP or LACP. It is a "static" or "unconditional" mode. It only works if the other side is also set to on.
+active: This mode places the port in an active negotiating state. The port initiates LACP negotiations by sending LACP packets. This is the recommended mode for initiating a channel.
+passive: This mode places the port in a passive negotiating state. The port responds to LACP packets it receives but will not initiate negotiations. A channel will form only if the other side is set to active.
+
+Best Practice: Configure both sides as active for the most reliable and dynamic channel formation.
+
+Load Balancing:
+EtherChannel does more than just combine bandwidth. It also load-balances traffic across the physical links. The switch uses a hash algorithm to decide which physical link to use for a given frame. The algorithm can be based on various parameters, such as:
+Source MAC address
+Destination MAC address
+Source and Destination MAC address
+Source IP address
+Destination IP address
+Source and Destination IP address
+Layer 4 (TCP/UDP) port numbers
+This means that a single conversation (or flow) between two devices will always use the same physical link to prevent out-of-order packets, but multiple different conversations will be distributed across all links in the bundle.
+
+Configuration Steps:
+1. Create the logical EtherChannel interface on the switch.
+2. Assign the physical interfaces to the EtherChannel group.
+3. Configure the LACP mode on the physical interfaces.
+
+Example Configuration:
+On Switch 1:
+interface Port-channel 1
+switchport mode trunk
+exit
+interface range gigabitethernet 0/1-2
+channel-group 1 mode active
+switchport mode trunk
+exit
+
+On Switch 2:
+interface Port-channel 1
+switchport mode trunk
+exit
+interface range gigabitethernet 0/1-2
+channel-group 1 mode active
+switchport mode trunk
+exit
+
+Verification Commands:
+show etherchannel summary: This is the most important command. It shows a brief status of all EtherChannel groups, including the ports in them and their status. A successful channel will show a flag 'P' for Port-channel and 'SU' for the member ports, meaning they are in use.
+show etherchannel port-channel: Shows details about the logical Port-channel interface.
+show interfaces trunk: Will show the Port-channel interface as a trunk, not the individual physical interfaces.
+
+Assignment 2: Configuring an EtherChannel with LACP
+
+Objective: To create a redundant, high-bandwidth link between two switches using LACP.
+1. In Packet Tracer, use two switches. Connect them with two or three Ethernet cables (e.g., connect Gi0/1 on SW1 to Gi0/1 on SW2, and Gi0/2 on SW1 to Gi0/2 on SW2).
+2. On both switches, create the logical Port-channel interface (interface Port-channel 1).
+3. On both switches, select the physical interfaces you connected and configure them for LACP active mode, assigning them to channel-group 1.
+   SW1(config)# interface range g0/1-2
+   SW1(config-if-range)# channel-group 1 mode active
+   SW1(config-if-range)# exit
+4. Configure the Port-channel interface as a trunk to carry multiple VLANs.
+   SW1(config)# interface port-channel 1
+   SW1(config-if)# switchport mode trunk
+5. Repeat steps 2-4 on SW2 with the exact same configuration.
+6. Now, verify your work.
+   On either switch, run show etherchannel summary. You should see group 1, and under the 'Ports' column, you should see your Gi0/1 and Gi0/2 with a status of (SU).
+   Run show interfaces trunk. You should see Po1 listed as a trunk port.
+7. Test redundancy. From a PC connected to SW1, continuously ping a PC connected to SW2 (use the ping -t command or a constant ping). While the ping is running, physically unplug one of the cables in the EtherChannel. The ping should continue without any interruption because the traffic is automatically moved to the remaining link in the bundle. Plug the cable back in and observe the recovery.
+
+Glossary for Topic 2:
+EtherChannel: A logical interface that bundles multiple physical links.
+LACP: The standard protocol for negotiating EtherChannels.
+Port-channel: The logical interface representing the EtherChannel bundle.
+Load Balancing: The method of distributing traffic across the physical links in a channel.
+Active Mode: An LACP mode that initiates negotiation.
+Passive Mode: An LACP mode that responds to negotiation requests.
+
+Are you ready to proceed to the next topic, Spanning Tree Protocol (STP)?

@@ -1,0 +1,63 @@
+Of course. Let's continue with Switch Management.
+
+Topic 2: Switch Management
+
+A switch is an active, intelligent device that requires configuration. To configure it, you need to access its operating system, which is called the IOS (Internetwork Operating System). There are several ways to do this, and understanding them is crucial for a network engineer.
+
+Out-of-Band Management: This is management that does not use the network itself. The primary method is using the Console Port. Every Cisco switch and router has a physical console port. You connect a rollover cable (or a straight-through cable with a USB adapter) from this port to your computer's serial/USB port. You then use a terminal emulation program like PuTTY or Tera Term to establish a direct, physical connection. This is the method you use when the device is new or has no network configuration. It is the most reliable access method.
+
+In-Band Management: This is management that happens over the network itself. This requires the switch to already have a basic network configuration. The two main methods are:
+Telnet: This is a protocol that provides a CLI over a virtual terminal connection. However, it is insecure because all data, including passwords and commands, is sent in plain text. Never use it over production networks.
+SSH (Secure Shell): This is the secure replacement for Telnet. It encrypts the entire CLI session. This is the standard and required method for remote management over a network.
+
+To manage a switch over the network (via Telnet or SSH), the switch must have an IP address. However, a Layer 2 switch operates at the data link layer and does not use IP addresses to switch frames. So, why does it need an IP address? The IP address on a switch is used for one purpose only: management. It allows you to telnet or SSH to the switch to configure it. This IP address is assigned to a virtual interface called the Switch Virtual Interface (SVI). The default SVI is interface VLAN 1.
+
+Here are the critical steps to initially configure a switch for secure remote management:
+
+1. Access the switch via the console cable.
+2. Assign a hostname: `Switch(config)# hostname SW1`
+3. Set a password for privileged EXEC mode (enable secret): `SW1(config)# enable secret mySecurePassword`
+4. Configure the SVI for management with an IP address in your network: `SW1(config)# interface vlan 1` then `SW1(config-if)# ip address 192.168.1.10 255.255.255.0` then `SW1(config-if)# no shutdown`
+5. Set a password for the console port: `SW1(config)# line con 0` then `SW1(config-line)# password consolepassword` then `SW1(config-line)# login`
+6. Set a password for the VTY lines (used for Telnet/SSH): `SW1(config)# line vty 0 15` then `SW1(config-line)# password vtypassword` then `SW1(config-line)# login`
+7. Configure a default gateway so the switch can communicate with remote networks for management: `SW1(config)# ip default-gateway 192.168.1.1`
+8. (Critical) Enable SSH for secure access: This involves generating cryptographic keys and configuring the VTY lines to use SSH.
+`SW1(config)# hostname SW1` (required for key generation)
+`SW1(config)# ip domain-name mynetwork.com` (required for key generation)
+`SW1(config)# crypto key generate rsa` (use a modulus of 1024 bits)
+`SW1(config)# username admin secret adminpassword`
+`SW1(config)# line vty 0 15`
+`SW1(config-line)# transport input ssh` (This disables Telnet and allows only SSH)
+`SW1(config-line)# login local` (This uses the local username/password for authentication)
+
+Assignment 2: Basic Switch Configuration and Securing Remote Access
+
+Objective: To configure a switch with basic settings and enable secure SSH management.
+1. In Packet Tracer, use a 2960 switch and one PC. Connect the PC to the switch using a console cable (use the RS-232 to Router connection in Packet Tracer).
+2. Open the PC's Terminal program. You are now in the switch's console.
+3. Enter privileged EXEC mode with `enable`.
+4. Enter global configuration mode: `configure terminal`.
+5. Set the hostname to `SW1`.
+6. Set the enable secret to `cisco`.
+7. Configure the SVI on VLAN 1: `interface vlan 1`, assign IP address `192.168.1.2 255.255.255.0`, and issue `no shutdown`.
+8. Set the console password to `consolepass` and enable login.
+9. Set the VTY password to `vtypass` and enable login.
+10. Configure the default gateway to `192.168.1.1`.
+11. Now, disconnect the console cable. Connect the PC to a switch port using a straight-through Ethernet cable. Configure the PC with IP address `192.168.1.10/24`.
+12. Open the PC's Command Prompt and ping the switch's IP address (`ping 192.168.1.2`). It should be successful.
+13. Now, open the PC's Telnet/SSH client (in Packet Tracer, use the Desktop tab > Command Prompt). Try to telnet to `192.168.1.2`. You should be able to connect using the VTY password and then the enable secret.
+14. Go back to the switch via console and configure SSH as outlined in step 8 above. Use the hostname `SW1` and the domain name `ccna.lab`.
+15. After generating the RSA keys, go back to the VTY lines and set `transport input ssh`.
+16. Now, try to telnet from the PC again. The connection should be refused.
+17. Use the SSH client from the PC to connect to `192.168.1.2`. You should now connect securely.
+
+Glossary for Topic 2:
+Out-of-Band Management: Device access via a dedicated physical connection, like a console port.
+In-Band Management: Device access via the network using Telnet or SSH.
+Console Port: A physical port on a network device used for out-of-band management.
+SVI (Switch Virtual Interface): A virtual interface on a switch that allows it to be assigned an IP address for management.
+IOS (Internetwork Operating System): The operating system software that runs on Cisco devices.
+Enable Secret: The encrypted password used to secure privileged EXEC mode.
+VTY Lines: Virtual terminal lines used for remote Telnet or SSH access.
+
+Are you ready to proceed to the next topic, Cisco Configuration Mode?
